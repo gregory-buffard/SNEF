@@ -55,17 +55,13 @@ app.post("/api/updateWorker", (req, res) => {
     })
 });
 
-app.listen(5000, () => {
-    console.log(`Server is running`);
+app.listen(5001, () => {
+    console.log(`Server is running on port 5001`);
     mongoose.connect(data.MONGODB_URI).then(r =>
-        console.log("Connected to MongoDB")
-    );
+        console.log("Connected to MongoDB"));
+});
 app.get("/", (req, res) => {
   res.send("Hello World!");
-});
-
-app.listen(5000, () => {
-  console.log(`Server is running on port 5000`);
 });
 
 const worksheet = (): any => {
