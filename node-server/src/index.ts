@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import data from "./data.json";
 import Worker from "./schema/workerSchema";
 import {Schedule} from "./models/worker";
+import {randomInt, getRandomValues} from "crypto";
 
 const xl = require("excel4node");
 
@@ -56,7 +57,7 @@ app.post("/api/updateWorker", (req, res) => {
 });
 
 app.listen(5001, () => {
-    console.log(`Server is running on port 5001`);
+    console.log(`Server is running on port 5000`);
     mongoose.connect(data.MONGODB_URI).then(r =>
         console.log("Connected to MongoDB"));
 });
@@ -67,15 +68,15 @@ app.get("/", (req, res) => {
 const worksheet = (): any => {
   //Dataset assignment :
   const Attendance: any[][] = [
-    ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"],
     [
-      [30, 25, 20, 15, 50],
-      [50, 50, 20, 35, 5],
-      [30, 25, 20, 15, 50],
-      [50, 50, 20, 35, 5],
-      [30, 25, 20, 15, 50],
-      [50, 50, 20, 35, 5],
-      [30, 25, 20, 15, 50],
+      [randomInt(1, 9), randomInt(1, 9), randomInt(1, 9), randomInt(1, 9), randomInt(1, 9)],
+      [randomInt(1, 9), randomInt(1, 9), randomInt(1, 9), randomInt(1, 9), randomInt(1, 9)],
+      [randomInt(1, 9), randomInt(1, 9), randomInt(1, 9), randomInt(1, 9), randomInt(1, 9)],
+      [randomInt(1, 9), randomInt(1, 9), randomInt(1, 9), randomInt(1, 9), randomInt(1, 9)],
+      [randomInt(1, 9), randomInt(1, 9), randomInt(1, 9), randomInt(1, 9), randomInt(1, 9)],
+      [randomInt(1, 9), randomInt(1, 9), randomInt(1, 9), randomInt(1, 9), randomInt(1, 9)],
+      [randomInt(1, 9), randomInt(1, 9), randomInt(1, 9), randomInt(1, 9), randomInt(1, 9)],
     ],
   ];
   const Vehicle: any[][] = [
@@ -106,7 +107,7 @@ const worksheet = (): any => {
   });
 
   const centerBoldMedium = wb.createStyle({
-    alignment: { horizontal: "center", vertical: "center" },
+    alignment: { horizontal: "left", vertical: "center" },
     font: { bold: true, color: "#000000", name: "Calibri", size: 18 },
   });
 
@@ -126,15 +127,42 @@ const worksheet = (): any => {
 
   const ws: any = wb.addWorksheet("POINTAGE");
 
-  ws.column(1).setWidth(102 / 6);
-  ws.column(2).setWidth(20.25 / 6);
-  ws.column(3).setWidth(66 / 6);
-  ws.column(4).setWidth(66 / 6);
-  ws.column(5).setWidth(66 / 6);
-  ws.column(6).setWidth(66 / 6);
-  ws.column(7).setWidth(66 / 6);
-  ws.column(8).setWidth(66 / 6);
-  ws.column(9).setWidth(152.25 / 6);
+  const currentDate :string = (new Date().getDate()) + "/" + (new Date().getMonth() + 1) + "/" + (new Date().getFullYear());
+  const weekAgo :string = (new Date().getDate() - 7) + "/" + (new Date().getMonth() + 1) + "/" + (new Date().getFullYear());
+
+  function getWeekNumber(d: Date): number {
+    const date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    const dayNum = date.getUTCDay() || 7;
+    date.setUTCDate(date.getUTCDate() + 4 - dayNum);
+    const yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
+    return Math.ceil((((date.valueOf() - yearStart.valueOf()) / 86400000) + 1) / 7);
+  }
+
+  const dateToday :Date = new Date();
+  const dateWeekAgo:Date = new Date(dateToday.getTime() - 7 * 24 * 60 * 60 * 1000);
+  const weekAgoWeekNumber:number = getWeekNumber(dateWeekAgo);
+
+  const Rented = () => {
+    const random = randomInt(2);
+    if (random === 0) {
+      return ["Vehicule SNEF", ("N°" + randomInt(26))];
+    } else if (random === 1) {
+      function generateRandomString(length: number): string {
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        let result = '';
+
+        for (let i = 0; i < length; i++) {
+          const randomIndex = Math.floor(Math.random() * characters.length);
+          result += characters.charAt(randomIndex);
+        }
+
+        return result;
+      }
+        return ["Vehicule Loué", (generateRandomString(4))];
+    }
+  }
+
+  const VehicleRented:string[] = Rented() as unknown as string[];
 
   ws.cell(1, 1).string("SNEF").style(centerBoldLarge);
   ws.cell(1, 2, 1, 9, true)
@@ -142,16 +170,16 @@ const worksheet = (): any => {
     .style(centerBoldLarge);
   ws.cell(2, 2, 2, 8, true).string("NOM :").style(centerBoldMedium);
   ws.cell(2, 9)
-    .string("SEMAINE N°13 du 1/04/2023 - 7/04/2023")
+    .string("SEMAINE N°" + weekAgoWeekNumber + " du " + weekAgo + " - " + currentDate)
     .style(centerBold);
-  ws.cell(3, 2).string("DÉSIGNATION CHANTIER").style(centerBold);
+  ws.cell(3, 1).string("DÉSIGNATION CHANTIER").style(centerBold);
   ws.cell(3, 3).string("PARKING PUBLIC").style(centerBold);
   ws.cell(3, 4).string("PARKING PRIVÉE").style(centerBold);
   ws.cell(3, 5).string("MALADIE").style(centerBold);
   ws.cell(3, 6).string("FERIÉ").style(centerBold);
   ws.cell(3, 7).string("CONGÉS").style(centerBold);
   ws.cell(3, 8).string("TOTAL").style(centerBold);
-  ws.cell(3, 9).string("? VOITURE SNEF : LOCATION").style(centerBold);
+  ws.cell(3, 9).string(VehicleRented[0]).style(centerBold);
   ws.cell(4, 1).string("JOURS").style(leftBold);
   ws.cell(4, 2).string("N°").style(center);
   ws.cell(4, 3).string("1WXQ00").style(center);
@@ -159,16 +187,16 @@ const worksheet = (): any => {
   ws.cell(4, 5).string("XX").style(center);
   ws.cell(4, 6).string("F21007").style(center);
   ws.cell(4, 7).string("XX").style(center);
-  ws.cell(4, 9).string("? IMMATRICULATION : N°").style(center);
+  ws.cell(4, 9).string(VehicleRented[1]).style(center);
 
-  const days = [
-    "LUNDI",
-    "MARDI",
-    "MERCREDI",
-    "JEUDI",
-    "VENDREDI",
-    "SAMEDI",
-    "DIMANCHE",
+  const days :any[] = [
+      Attendance[0][0],
+        Attendance[0][1],
+        Attendance[0][2],
+        Attendance[0][3],
+        Attendance[0][4],
+        Attendance[0][5],
+        Attendance[0][6]
   ];
   for (let i = 0; i < days.length; i++) {
     ws.cell(5 + i, 1, 5 + i, 2, true)
@@ -178,32 +206,32 @@ const worksheet = (): any => {
 
   ws.cell(12, 1, 12, 2, true).string("TOTAL").style(leftBold);
 
-  ws.column(1).setWidth(12);
+  ws.column(1).setWidth(25);
   ws.column(2).setWidth(2.5);
-  ws.column(3).setWidth(8);
-  ws.column(4).setWidth(8);
-  ws.column(5).setWidth(8);
-  ws.column(6).setWidth(8);
-  ws.column(7).setWidth(8);
+  ws.column(3).setWidth(15);
+  ws.column(4).setWidth(15);
+  ws.column(5).setWidth(15);
+  ws.column(6).setWidth(15);
+  ws.column(7).setWidth(15);
   ws.column(8).setWidth(10);
-  ws.column(9).setWidth(25);
+  ws.column(9).setWidth(40);
 
   // Write values to cells
   for (let i = 0; i < days.length; i++) {
     ws.cell(5 + i, 3)
-      .number(0)
+      .number(Attendance[1][i][0])
       .style(centerBold);
     ws.cell(5 + i, 4)
-      .number(0)
+      .number(Attendance[1][i][1])
       .style(centerBold);
     ws.cell(5 + i, 5)
-      .number(0)
+      .number(Attendance[1][i][2])
       .style(centerBold);
     ws.cell(5 + i, 6)
-      .number(0)
+      .number(Attendance[1][i][3])
       .style(centerBold);
     ws.cell(5 + i, 7)
-      .number(0)
+      .number(Attendance[1][i][4])
       .style(centerBold);
     ws.cell(5 + i, 8)
       .formula("=SUM(C${5 + i}:G${5 + i})")
@@ -218,6 +246,16 @@ const worksheet = (): any => {
   ws.cell(12, 7).formula("=SUM(G5:G11)").style(centerBold);
   ws.cell(12, 8).formula("=SUM(H5:H11)").style(centerBold);
 
+  ws.cell(5, 8).formula("=SUM(C5:G5)").style(centerBold);
+  ws.cell(6, 8).formula("=SUM(C6:G6)").style(centerBold);
+  ws.cell(7, 8).formula("=SUM(C7:G7)").style(centerBold);
+  ws.cell(8, 8).formula("=SUM(C8:G8)").style(centerBold);
+  ws.cell(9, 8).formula("=SUM(C9:G9)").style(centerBold);
+  ws.cell(10, 8).formula("=SUM(C10:G10)").style(centerBold);
+  ws.cell(11, 8).formula("=SUM(C11:G11)").style(centerBold);
+
+  ws.cell(13, 1).string("©" + (new Date().getFullYear()) + " Foton Inc.").style(centerBold);
+
   return wb;
 };
 
@@ -230,7 +268,7 @@ app.get("/download", async (req, res) => {
       "Content-Type",
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     );
-    res.setHeader("Content-Disposition", "attachment; filename=SNEF.xlsx");
+    res.setHeader("Content-Disposition", "attachment; filename=Feuille de pointage.xlsx");
     res.send(buffer);
   } catch (error) {
     console.log(error);
