@@ -5,6 +5,7 @@ import data from "./data.json";
 import Worker from "./schema/workerSchema";
 import { Schedule } from "./models/worker";
 import { randomInt } from "crypto";
+import {supabase} from "./supabaseClient";
 
 const xl = require("excel4node");
 
@@ -74,6 +75,20 @@ app.listen(5001, () => {
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
+
+const carDetails = async (name:string) => {
+  const { data, error } = await supabase.from('Staff ID').select('carType, carID').eq('Name', name)
+
+  if (error) console.log("ERROR : ", error);
+
+  else if (data) {
+    const carType = data[0]['carType'] ;
+    const carId = data[0]['carID'] ;
+    console.log("Car Type : ", carType, "Car ID : ", carId);
+
+    return [carType, carId] as [string, string]
+  }
+}
 
 const worksheet = (): any => {
   //Dataset assignment :
@@ -229,7 +244,7 @@ const worksheet = (): any => {
     }
   };
 
-  const VehicleRented: string[] = Rented() as unknown as string[];
+  const VehicleRented: string[] = carDetails("lionel jouffrais") as unknown as string[];
 
   ws.cell(1, 1).string("SNEF").style(centerBoldLarge);
   ws.cell(1, 2, 1, 9, true)
@@ -258,7 +273,7 @@ const worksheet = (): any => {
   ws.cell(4, 5).string("XX").style(center);
   ws.cell(4, 6).string("F21007").style(center);
   ws.cell(4, 7).string("XX").style(center);
-  ws.cell(4, 9).string(VehicleRented[1]).style(center);
+  ws.cell(4, 9).string("Vehicule " + VehicleRented[0]).style(center);
 
   const days: any[] = [
     Attendance[0][0],
