@@ -55,8 +55,14 @@ app.get("/download", async (req, res) => {
     if (!req.query || !req.query.name) return res.status(400).send("Missing name");
     const name = req.query.name.toString();
     const workbook = await getWorksheet(name);
-    const filename = `files/${name}-${new Date().toLocaleDateString()}.xlsx`;
-    workbook.write(filename)
+    const currentDate: string =
+        new Date().getDate() +
+        "-" +
+        (new Date().getMonth() + 1) +
+        "-" +
+        new Date().getFullYear();
+    const filename = `files/Feuille de pointage ${name} (${currentDate}).xlsx`;
+    workbook.write(filename);
     setTimeout(() => {
         res.status(200).download(filename);
         console.log("File sent")
