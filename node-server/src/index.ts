@@ -268,7 +268,7 @@ const worksheet = async (name:string):Promise<any> => {
 
   const carDetailsResult = await carDetails(name) ;
   carType = carDetailsResult.carType as string ;
-  carID = carDetailsResult.carId.toString() as string ;
+  carID = carDetailsResult.carId.toString() ;
 
   ws.cell(3, 9).string("Vehicule " + carType).style(centerBold);
   ws.cell(4, 9).string(carID).style(center);
