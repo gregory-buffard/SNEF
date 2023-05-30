@@ -11,8 +11,11 @@ const Page = () => {
   /*const [name, setName] = useState<string>("");
   const [data, setData] = useState<IFile>({ name: "" });
 
-  const handleReq = () => {
-    axios.post("/api/requestFile", { name }).then((r) => console.log(r.data));
+  const handleReq = async (e:any) => {
+    e.preventDefault();
+    const result = await axios.get("/api/route", { params: { name } });
+    axios.post("/api/route", { name }).then((r) => console.log(r.data));
+    console.log(result);
   };*/
 
   return (
@@ -150,8 +153,16 @@ const Page = () => {
         />
         <button
           type="button"
-          onClick={() => {
+          onClick={async () => {
             setToQuery(name);
+            try {
+                const result = await axios.post('/api/sendExcel.ts', name );
+                console.log(result);
+              // handle the response accordingly
+            } catch (error) {
+              // handle error
+              console.error(error);
+            }
           }}
         >
           <Link href="http://localhost:5001/download">

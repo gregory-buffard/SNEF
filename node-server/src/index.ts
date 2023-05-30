@@ -1,7 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import mongoose from "mongoose";
-import data from "./data.json";
+/*import data from "./data.json";*/
 import Worker from "./schema/workerSchema";
 import { Schedule } from "./models/worker";
 import { randomInt } from "crypto";
@@ -68,29 +68,15 @@ app.post("/api/updateWorker", (req, res) => {
 
 app.listen(5001, () => {
   console.log(`Server is running on port 5000`);
-  mongoose
+  /*mongoose
     .connect(data.MONGODB_URI)
-    .then((r) => console.log("Connected to MongoDB"));
+    .then((r) => console.log("Connected to MongoDB"));*/
 });
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-const carDetails = async (name:string) => {
-  const { data, error } = await supabase.from('Staff ID').select('carType, carID').eq('Name', name)
-
-  if (error) console.log("ERROR : ", error);
-
-  else if (data) {
-    const carType = data[0]['carType'] ;
-    const carId = data[0]['carID'] ;
-    console.log("Car Type : ", carType, "Car ID : ", carId);
-
-    return [carType, carId] as [string, string]
-  }
-}
-
-const worksheet = (): any => {
+const worksheet = async (name:string):Promise<any> => {
   //Dataset assignment :
   const Attendance: any[][] = [
     ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"],
@@ -145,10 +131,6 @@ const worksheet = (): any => {
         randomInt(1, 9),
       ],
     ],
-  ];
-  const Vehicle: any[][] = [
-    ["Rented", "Service"],
-    ["15F651D8F", 69],
   ];
 
   //Excel initialization :
@@ -244,20 +226,52 @@ const worksheet = (): any => {
     }
   };
 
-  const VehicleRented: string[] = carDetails("lionel jouffrais") as unknown as string[];
-
   ws.cell(1, 1).string("SNEF").style(centerBoldLarge);
   ws.cell(1, 2, 1, 9, true)
     .string("FEUILLE DE POINTAGE")
     .style(centerBoldLarge);
   ws.cell(2, 2, 2, 8, true)
-    .string("NOM : Lionel Jouffrais")
+    .string("NOM : " + name)
     .style(centerBoldMedium);
   ws.cell(2, 9)
     .string(
       "SEMAINE N°" + weekAgoWeekNumber + " du " + weekAgo + " - " + currentDate
     )
     .style(centerBold);
+
+  let carType: string = "";
+  let carID: string = "";
+
+  const carDetails = async (name:string) => {
+    const { data: staffID, error } = await supabase
+        .from('staffID')
+        .select('carType, carID')
+        .eq("name", name)
+
+    let carType = "" ;
+    let carId = "" ;
+
+    if (error) console.log("ERROR : ", error);
+
+    else if (staffID && staffID.length > 0) {
+      carType = staffID[0].carType as string ;
+      carId = staffID[0].carID as string ;
+    }
+
+    console.log("Car Type : ", carType, "Car ID : ", carId)
+    return {carType, carId};
+  }
+
+  name = name.normalize("NFD").replace(/[\u0300-\u036f]/g, "") ;
+  name = name.toLowerCase() ;
+  console.log(name) ;
+
+  const carDetailsResult = await carDetails(name) ;
+  carType = carDetailsResult.carType as string ;
+  carID = carDetailsResult.carId.toString() as string ;
+
+  ws.cell(3, 9).string("Vehicule " + carType).style(centerBold);
+  ws.cell(4, 9).string(carID).style(center);
   ws.cell(3, 1).string("DÉSIGNATION CHANTIER").style(centerBold);
   ws.cell(3, 3).string("PARKING PUBLIC").style(centerBold);
   ws.cell(3, 4).string("PARKING PRIVÉE").style(centerBold);
@@ -265,7 +279,6 @@ const worksheet = (): any => {
   ws.cell(3, 6).string("FERIÉ").style(centerBold);
   ws.cell(3, 7).string("CONGÉS").style(centerBold);
   ws.cell(3, 8).string("TOTAL").style(centerBold);
-  ws.cell(3, 9).string(VehicleRented[0]).style(centerBold);
   ws.cell(4, 1).string("JOURS").style(leftBold);
   ws.cell(4, 2).string("N°").style(center);
   ws.cell(4, 3).string("1WXQ00").style(center);
@@ -273,7 +286,6 @@ const worksheet = (): any => {
   ws.cell(4, 5).string("XX").style(center);
   ws.cell(4, 6).string("F21007").style(center);
   ws.cell(4, 7).string("XX").style(center);
-  ws.cell(4, 9).string("Vehicule " + VehicleRented[0]).style(center);
 
   const days: any[] = [
     Attendance[0][0],
@@ -349,8 +361,18 @@ const worksheet = (): any => {
 
 //Download route :
 app.get("/download", async (req, res) => {
-  const workbook = worksheet();
-  try {
+  const name = req.body.name as string;
+  console.log(name)
+  const workbook = await worksheet(name);
+  workbook.writeToBuffer().then((buffer:any) => {
+    res.setHeader(
+        "Content-Disposition",
+        "attachment; filename=" + "Feuille de pointage.xlsx"
+    );
+    res.type("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+    res.send(buffer);
+  })
+  /*try {
     const buffer = await workbook.writeToBuffer();
     res.setHeader(
       "Content-Type",
@@ -358,11 +380,11 @@ app.get("/download", async (req, res) => {
     );
     res.setHeader(
       "Content-Disposition",
-      "attachment; filename=Feuille de pointage - Lionel Jouffrais (22-Avr-2023 - 29-Avr-2023).xlsx"
+      "attachment; filename=Feuille de pointage - Lionel Jouffrais (22-Avr-2023 - 29-Avr-2.xlsx"
     );
     res.send(buffer);
   } catch (error) {
     console.log(error);
     res.sendStatus(500);
-  }
+  }*/
 });
