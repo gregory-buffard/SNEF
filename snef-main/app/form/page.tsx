@@ -4,22 +4,10 @@ import {supabase} from "../supabase";
 import {useState} from "react";
 import {IoIosArrowUp, IoIosArrowDown} from "react-icons/io";
 import {LuClipboardEdit} from "react-icons/lu";
+import {TfiMenuAlt} from "react-icons/tfi";
 
 const Page = () => {
     const handleSubmit = (e:any) => {};
-
-    /*const getWorkspaces = async () => {
-        const {data, error} = await supabase.from("pg_tables").select("tablename").neq("tablename", "staffID");
-        if (error) console.log(error);
-        else console.log(data);
-        return data;
-    }
-    const data = getWorkspaces() as any;*/
-    /*const [data, setData] = useState("");*/
-    /*for(let i = 0; i < 0; i++) {
-        break
-    }*/
-    /*setData("<p>Parking Public</p><p>Parking Privée</p><p>Maladie</p><p>Ferié</p><p>Congés</p>")*/
 
     const data = [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]];
     const [dataSet, setDataSet] = useState(data);
@@ -38,8 +26,23 @@ const Page = () => {
         "/" +
         new Date().getFullYear();
 
+    const [menu, setMenu] = useState("translate-x-[-10vw]");
+
     return (
         <main className="w-2/3 h-screen m-auto flex flex-col justify-center items-center not-italic space-y-6 select-none">
+            <button type={"button"} className={"absolute left-[2vw] top-[2vh] bg-neutral-100 px-[0.25vw] py-[0.25vw] rounded-[0.25vw] hover:bg-neutral-300 shadow-inner"} onClick={() => {
+                if (menu == "translate-x-[-10vw]") {
+                    setMenu("translate-x-[2vw]");
+                } else {
+                    setMenu("translate-x-[-10vw]");
+                }
+            }}><TfiMenuAlt /></button>
+            <div className={"absolute bg-neutral-100 px-[1vw] py-[1vh] rounded-[0.5vw] drop-shadow-lg top-[3vh] transition duration-200 ease-in-out left-0 flex flex-col justify-start items-start " + menu}><div className={"flex justify-start items-center space-x-3"}><input type={"checkbox"} className={"cursor-pointer"} /><p>Parking Public</p></div>
+                <div className={"flex justify-start items-center space-x-3"}><input type={"checkbox"} className={"cursor-pointer"} /><p>Parking Privée</p></div>
+                <div className={"flex justify-start items-center space-x-3"}><input type={"checkbox"} className={"cursor-pointer"} /><p>Maladie</p></div>
+                <div className={"flex justify-start items-center space-x-3"}><input type={"checkbox"} className={"cursor-pointer"} /><p>Ferié</p></div>
+                <div className={"flex justify-start items-center space-x-3"}><input type={"checkbox"} className={"cursor-pointer"} /><p>Congés</p></div>
+            </div>
             <div className={"flex flex-col justify-center items-center space-y-2"}>
                 <h1 className={"text-4xl text-neutral-800"}>Formulaire de pointage de Testing Subject</h1>
                 <h3 className={"border-2 border-neutral-300 px-[0.25vw] py-[0.25vh] rounded-[0.5vw]"}>{weekAgo} – {currentDate}</h3>
