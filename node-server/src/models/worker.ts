@@ -1,16 +1,15 @@
-export interface Worker {
+interface Worker {
     _id?: string;
     name?: string;
-    email?: string;
-    schedule?: [Schedule]
+    schedule?: Schedule[]
 }
 
 export interface Schedule {
-    date?: Date;
+    date?: Date,
     workDone?: [{
         place?: string;
-        timeInMin?: number;
-        description?: string;
+        hours?: number;
     }]
 }
+export default Worker
 
