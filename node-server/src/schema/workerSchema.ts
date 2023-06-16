@@ -5,34 +5,23 @@ const workerSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    email: {
-        type: String,
-        required: true
-    },
-    schedule: {
-        type: [{
+    schedule: [{
             date: {
                 type: Date,
-                required: true
+                required: true,
+                default: Date.now
             },
-            workDone: {
-                type: [{
+            workDone: [{
                     place: {
                         type: String,
                         required: true
                     },
-                    timeInMin: {
+                    hours: {
                         type: Number,
                         required: true
-                    },
-                    description: {
-                        type: String,
                     }
                 }]
-
-            }
         }]
-    }
 });
 
 const Worker = mongoose.model('Worker', workerSchema);
