@@ -1,6 +1,5 @@
 "use client";
 
-import {supabase} from "../supabase";
 import {useEffect, useState} from "react";
 import {IoIosArrowUp, IoIosArrowDown} from "react-icons/io";
 import {LuClipboardEdit} from "react-icons/lu";
@@ -64,11 +63,12 @@ const Page = () => {
             const name = Cookies.get("name")
             if (name == undefined) {
                 window.location.href = "/"
+                return
             }
             axios.get(`http://localhost:5001/worker/?name=${name}`).then((res) => {
                 console.log(res.data)
                 setData({
-                    name: res.data.name,
+                    name: name,
                     schedule: (res.data.schedule && res.data.schedule.length >0 ? res.data.schedule : initData.schedule)
                 })
                 setLoading(false)
@@ -287,7 +287,7 @@ const Section = ({
                             setData(item + 1);
                         }}
                     >
-                        <IoIosArrowUp className={"text-2xl mx-[0.5vw] h-[2.5vh]"}/>
+                        <IoIosArrowUp className={"text-[1vw] mx-[0.5vw] h-[2.5vh]"}/>
                     </button>
                     <button
                         type={"button"}
@@ -298,7 +298,7 @@ const Section = ({
                             if (item > 0) setData(item - 1);
                         }}
                     >
-                        <IoIosArrowDown className={"text-2xl mx-[0.5vw] h-[2.5vh]"}/>
+                        <IoIosArrowDown className={"text-[1vw] mx-[0.5vw] h-[2.5vh]"}/>
                     </button>
                 </div>
             </div>

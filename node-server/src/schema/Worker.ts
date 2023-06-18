@@ -12,8 +12,19 @@ const workerSchema = new mongoose.Schema({
     schedule: {
         type: [{
             name: String,
+            codeNumber: String,
             days: [Number]
         }],
+    },
+    carDetails: {
+        type: {
+            origin: String,
+            code: String,
+        },
+        default: {
+            origin: "Non-definit",
+            code: "Non-definit",
+        }
     }
 });
 
