@@ -4,8 +4,15 @@ import {supabase} from "../supabaseClient";
 const xl = require('excel4node');
 
 
-const getWorksheet = async (name:string) => {
-    //Dataset assignment :
+const getWorksheet = async ({name, schedule, week}:{name:string, schedule:any, week:number}) => {
+
+    const newList = schedule.map((place: {name:string, days:number[]}) => {
+        return [place.name, place.days]
+    })
+    console.log("newList")
+    console.log(newList)
+    console.log("end")
+
     const Attendance: any[][] = [
         ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"],
         [
