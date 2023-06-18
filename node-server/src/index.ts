@@ -3,9 +3,6 @@ import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import data from "./data.json";
 import Worker from "./schema/workerSchema";
-import {Schedule} from "./models/worker";
-import {randomInt} from "crypto";
-import {supabase} from "./supabaseClient";
 import getWorksheet from "./excel/worksheet";
 
 const app = express();
@@ -54,7 +51,9 @@ app.listen(5001, () => {
 app.get("/download", async (req, res) => {
     if (!req.query || !req.query.name) return res.status(400).send("Missing name");
     const name = req.query.name.toString();
-    const workbook = await getWorksheet(name);
+    const worker = await Worker.findOne({name: name});
+    if (!worker) return res.status(404).send("Worker not found");
+    const workbook = await getWorksheet(worker);
     const currentDate: string =
         new Date().getDate() +
         "-" +
