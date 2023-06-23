@@ -15,4 +15,4 @@ EXPOSE 3000
 
 # Command to start the application
 CMD [ "npm", "client-dev" ]
-CMD ["npm", "backend-start"]
+CMD ["npm", "backend-raw"]
