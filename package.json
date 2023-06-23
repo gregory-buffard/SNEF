@@ -10,7 +10,7 @@
     "client-lint": "next lint",
     "backend-start": "nodemon node-server/src/index.ts -p 5000",
     "backend-raw": "ts-node node-server/src/index.ts",
-    "start": "concurrently \"npm run client-dev\" \"npm run backend-raw\""
+    "start": "concurrently \"npm run backend-raw\" \"npm run client-dev\""
   },
   "dependencies": {
     "@types/js-cookie": "^3.0.3",
