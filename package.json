@@ -4,13 +4,12 @@
   "description": "* Responsivity for iPhones\r * Block access to form in case of multiple user input\r * MongoDB assign workspace-codes to workspaces",
   "main": "index.js",
   "scripts": {
-    "client-dev": "cd snef-main && next dev -p 3000",
+    "start": "cd snef-main && next dev -p 3000",
     "client-build": "next build",
     "client-start": "next start -p 3000",
     "client-lint": "next lint",
     "backend-start": "nodemon node-server/src/index.ts -p 5000",
     "backend-raw": "ts-node node-server/src/index.ts",
-    "start": "concurrently \"npm run backend-raw\" \"npm run client-dev\""
   },
   "dependencies": {
     "@types/js-cookie": "^3.0.3",
