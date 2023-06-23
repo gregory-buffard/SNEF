@@ -5,7 +5,9 @@ FROM node:20.3.1
 WORKDIR ./
 
 # Copy package.json and package-lock.json files to the frontend directory
-COPY ./ ./
+COPY package*.json ./
+COPY ./snef-main ./snef-main
+COPY ./node-server ./node-server
 
 # Install dependencies for the frontend
 RUN npm install
@@ -14,5 +16,4 @@ RUN npm install
 EXPOSE 3000
 
 # Command to start the application
-CMD [ "npm", "run", "client-dev" ]
-CMD ["npm", "run", "backend-raw"]
+CMD [ "npm", "start" ]
