@@ -14,5 +14,5 @@ RUN npm install
 EXPOSE 3000
 
 # Command to start the application
-CMD ["npm", "backend-raw"]
-CMD [ "npm", "client-dev" ]
+CMD [ "npm", "run", "client-dev" ]
+CMD ["npm", "run", "backend-raw"]
