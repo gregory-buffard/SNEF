@@ -6,7 +6,18 @@ module.exports = {
     "./app/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    screens: {
+      "iP": {max: "1291px"},
+    },
+    extend: {
+      colors: {
+        "snef": "rgb(0 83 80 / 50%)",
+        "white-low": "rgb(245 245 245 / 50%)",
+      },
+      dropShadow: {
+        "redish": "0 0 5px rgb(248 113 113 / 50%)"
+      },
+    },
   },
   plugins: [],
 };

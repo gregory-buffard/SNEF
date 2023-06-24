@@ -22,19 +22,19 @@ const Page = () => {
     },[])
 
     return (
-        <main className="w-screen h-screen flex justify-center items-center flex-col space-y-[2vh]">
-                <Image src={brand} width={0} height={0} alt={"SNEF brand logo"} className={"w-[10vw] drop-shadow-2xl rounded-md"}/>
+        <main className="w-screen h-screen flex justify-center items-center flex-col space-y-[2.5vh]">
+                <Image src={brand} width={0} height={0} alt={"SNEF brand logo"} className={"w-[10vw] drop-shadow-2xl rounded-md iP:w-[15vh]"}/>
             <div className={"flex items-center justify-center space-x-3"}>
                 <input
                     placeholder="Prénom(s) et nom(s)"
-                    className="w-[15vw] bg-white border-2 border-neutral-300 drop-shadow-2xl placeholder-neutral-300 rounded-full text-xl outline-none px-[1vw] py-[0.5vh] font-normal text-neutral-800 hover:bg-neutral-300 hover:placeholder-neutral-400 focus:bg-neutral-300 focus:placeholder-neutral-400 transition-all duration-200 ease-in-out text-[2vh]"
+                    className="w-[15vw] iP:w-[30vh] bg-white border-2 border-neutral-300 drop-shadow-2xl placeholder-neutral-300 rounded-full text-xl outline-none px-[1vw] iP:px-[1.5vh] py-[0.5vh] font-normal text-neutral-800 hover:bg-neutral-300 hover:placeholder-neutral-400 focus:bg-neutral-300 focus:placeholder-neutral-400 transition-all duration-200 ease-in-out text-[2vh] iP:text-[1.5vh]"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                 />
                 <a target={"_blank"}
                     href={`http://localhost:5001/download/?name=${name}`}
-                ><AiOutlineSearch className={"text-[2vw] text-neutral-800 drop-shadow-xl"} /></a>
-                <button onClick={handleClick}><AiOutlineForm className={"text-[2vw] text-neutral-800 drop-shadow-xl"} /></button>
+                ><AiOutlineSearch className={"text-[2vw] iP:text-[3vh] text-neutral-800 drop-shadow-xl"} /></a>
+                <button onClick={handleClick}><AiOutlineForm className={"text-[2vw] iP:text-[3vh] text-neutral-800 drop-shadow-xl"} /></button>
             </div>
 
         </main>
