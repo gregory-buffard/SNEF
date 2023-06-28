@@ -6,11 +6,19 @@ import {AiOutlineSearch, AiOutlineForm} from "react-icons/ai";
 import Image from "next/image";
 import brand from "../public/assets/brand.svg";
 import {useRouter} from "next/navigation";
+import {PiWarningBold} from "react-icons/pi";
 
 const Page = () => {
     const [name, setName] = useState( "");
     const router = useRouter();
     const handleClick = () => {
+        if (name.includes(",")) {
+            setAlertBox("translate-y-[2vw]");
+            setTimeout(() => {
+                setAlertBox("-translate-y-[10vw]");
+            }, 4600);
+            return;
+        }
         Cookies.set("name", name);
         router.push("/form");
     }
@@ -21,8 +29,11 @@ const Page = () => {
         }
     },[])
 
+    const [alertBox, setAlertBox] = useState("-translate-y-[10vw]");
+
     return (
         <main className="w-screen h-screen flex justify-center items-center flex-col space-y-[2.5vh]">
+            <div className={"absolute top-0 bg-white-low text-red-600 border-neutral-100 border-[0.25vh] flex justify-center items-center space-x-[0.5vw] text-[2vh] px-[1vw] py-[0.5vh] rounded-[0.75vw] iP:rounded-[1vh] transition duration-800 ease-in-out iP:text-[1.5vh] " + alertBox}><PiWarningBold className={"text-[1.25vw] iP:text-[1.75vh] drop-shadow-redish"} /><p className={"drop-shadow-redish"}>Le pointage ne peut être effectué que pour une seule personne à la fois.</p></div>
                 <Image src={brand} width={0} height={0} alt={"SNEF brand logo"} className={"w-[10vw] drop-shadow-2xl rounded-md iP:w-[15vh]"}/>
             <div className={"flex items-center justify-center space-x-3"}>
                 <input

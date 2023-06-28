@@ -8,9 +8,10 @@ import Cookies from "js-cookie";
 import axios from "axios";
 import {CgClose} from "react-icons/cg";
 import Link from "next/link";
+import Menu from "./Menu";
 
 
-interface Data {
+export interface Data {
     name: string;
     days: number[];
 }
@@ -58,7 +59,7 @@ const Page = () => {
             "/" +
             new Date().getFullYear();
 
-        const [menu, setMenu] = useState("translate-x-[-10vw] iP:translate-x-[-100vw]");
+        const [menu, setMenu] = useState(false);
 
         useEffect(() => {
             const name = Cookies.get("name")
@@ -90,46 +91,13 @@ const Page = () => {
                                     "absolute left-[2vw] top-[2vh] bg-neutral-100 px-[0.25vw] py-[0.25vw] rounded-[0.25vw] hover:bg-neutral-300 shadow-inner iP:text-[3vh] iP:px-[1.5vw] iP:py-[1.5vw] iP:rounded-[2vw]"
                                 }
                                 onClick={() => {
-                                    if (menu == "translate-x-[-10vw] iP:translate-x-[-100vw]") {
-                                        setMenu("translate-x-[2vw] iP:translate-x-[0vw]");
-                                    } else {
-                                        setMenu("translate-x-[-10vw] iP:translate-x-[-100vw]");
-                                    }
+                                    setMenu(!menu);
                                 }}
                             >
                                 <TfiMenuAlt/>
                             </button>
                             <Link href={"http://46.101.163.137/"} className={"absolute left-[4vw] iP:left-[14vw] -top-[1vh] bg-neutral-100 px-[0.25vw] py-[0.25vw] rounded-[0.25vw] hover:bg-neutral-300 shadow-inner iP:text-[3vh] iP:px-[1.5vw] iP:py-[1.5vw] iP:rounded-[2vw]"}><IoIosArrowBack /></Link>
-                            <div
-                                className={
-                                    "absolute bg-neutral-100 iP:bg-snef iP:backdrop-blur-md px-[1vw] py-[1vh] rounded-[0.5vw] drop-shadow-lg iP:drop-shadow-none top-[3vh] iP:top-[-3vh] transition duration-200 ease-in-out left-0 flex flex-col justify-start items-start iP:w-[90vw] iP:h-screen iP:z-10 iP:rounded-r-[2vh] iP:justify-center iP:items-baseline iP:space-y-[2vh] iP:pl-[25%] iP:text-[2vh] iP:text-neutral-100 " +
-                                    menu
-                                }
-                            >
-                                <button type={"button"} onClick={() => {
-                                    setMenu("translate-x-[-10vw] iP:translate-x-[-100vw]")
-                                }} className={"hidden iP:block absolute right-[3vw] top-[3vw] text-[3vh] px-[1vw] py-[1vw] text-center hover:text-neutral-300 hover:bg-neutral-900 hover:bg-opacity-50 rounded-full transition-all duration-200 ease-in-out"}><CgClose /></button>
-                                <div className={"flex justify-start items-center space-x-[1vw] iP:space-x-[2vh]"}>
-                                    <input type={"checkbox"} className={"cursor-pointer"}/>
-                                    <p>Parking Public</p>
-                                </div>
-                                <div className={"flex justify-start items-center space-x-[1vw] iP:space-x-[2vh]"}>
-                                    <input type={"checkbox"} className={"cursor-pointer"}/>
-                                    <p>Parking Privée</p>
-                                </div>
-                                <div className={"flex justify-start items-center space-x-[1vw] iP:space-x-[2vh]"}>
-                                    <input type={"checkbox"} className={"cursor-pointer"}/>
-                                    <p>Maladie</p>
-                                </div>
-                                <div className={"flex justify-start items-center space-x-[1vw] iP:space-x-[2vh]"}>
-                                    <input type={"checkbox"} className={"cursor-pointer"}/>
-                                    <p>Ferié</p>
-                                </div>
-                                <div className={"flex justify-start items-center space-x-[1vw] iP:space-x-[2vh]"}>
-                                    <input type={"checkbox"} className={"cursor-pointer"}/>
-                                    <p>Congés</p>
-                                </div>
-                            </div>
+                            <Menu menu={menu} setMenu={setMenu} data={data.schedule} />
                             <div className={"flex flex-col justify-center items-center space-y-2"}>
                                 <h1 className={"text-[1.5vw] iP:text-[2vh] text-neutral-800"}>
                                     Formulaire de pointage de {data.name}
@@ -270,9 +238,6 @@ const Section = ({
     item: number;
     setData: any;
 }) => {
-    /*{nav && (
-        <p className={"text-right"}>{nav}</p>
-    )}*/
     return (
         <div className={"flex my-[1vh]"}>
             <div className={"flex justify-center items-center"}>
