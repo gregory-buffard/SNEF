@@ -43,7 +43,7 @@ const Page = () => {
                     onChange={(e) => setName(e.target.value)}
                 />
                 <a target={"_blank"}
-                    href={`http://localhost:5001/download/?name=${name}`}
+                    href={`http://46.101.163.137:5001/download/?name=${name}`}
                 ><AiOutlineSearch className={"text-[2vw] iP:text-[3vh] text-neutral-800 drop-shadow-xl"} /></a>
                 <button onClick={handleClick}><AiOutlineForm className={"text-[2vw] iP:text-[3vh] text-neutral-800 drop-shadow-xl"} /></button>
             </div>
