@@ -70,7 +70,7 @@ const Page = () => {
                 window.location.href = "/"
                 return
             }
-            axios.get(`http://localhost:5001/worker/?name=${name}`).then((res) => {
+            axios.get(`https://api.snef.cloud/worker/?name=${name}`).then((res) => {
                 console.log(res.data)
                 setData({
                     name: name,
@@ -124,7 +124,7 @@ const Page = () => {
                             >
                                 <TfiMenuAlt/>
                             </button>
-                            <Link href={"http://46.101.163.137/"} className={"absolute left-[4vw] iP:left-[14vw] -top-[1vh] bg-neutral-100 px-[0.25vw] py-[0.25vw] rounded-[0.25vw] hover:bg-neutral-300 shadow-inner iP:text-[3vh] iP:px-[1.5vw] iP:py-[1.5vw] iP:rounded-[2vw]"}><IoIosArrowBack /></Link>
+                            <Link href={"https://www.snef.cloud"} className={"absolute left-[4vw] iP:left-[14vw] -top-[1vh] bg-neutral-100 px-[0.25vw] py-[0.25vw] rounded-[0.25vw] hover:bg-neutral-300 shadow-inner iP:text-[3vh] iP:px-[1.5vw] iP:py-[1.5vw] iP:rounded-[2vw]"}><IoIosArrowBack /></Link>
                             <Menu menu={menu} setMenu={setMenu} data={data.schedule} workspaceVisibility={workspaceVisibility} setWorkspaceVisibility={setWorkspaceVisibility} />
                             <div className={"flex flex-col justify-center items-center space-y-2"}>
                                 <h1 className={"text-[1.5vw] iP:text-[2vh] text-neutral-800"}>
@@ -181,12 +181,12 @@ const Page = () => {
                                             }, 4600)
                                         } else {
                                             console.log(data);
-                                            axios.post("http://46.101.163.137:5001/schedule", {
+                                            axios.post("https://api.snef.cloud/schedule", {
                                                 name: data.name,
                                                 schedule: data.schedule
                                             }).then((res) => {
                                                 console.log(res.data)
-                                                window.location.replace("http://46.101.163.137");
+                                                window.location.replace("https://www.snef.cloud");
                                             }).catch((err) => {
                                                 console.log(err)
                                             })
