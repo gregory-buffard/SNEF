@@ -85,7 +85,28 @@ const Page = () => {
         const [alertBox, setAlertBox] = useState(false);
         const [signature, setSignature] = useState(false);
 
-        return (
+    interface WorkspaceVisibility {
+        [key: string]: boolean;
+    }
+
+    const [workspaceVisibility, setWorkspaceVisibility] = useState(() => {
+        const initialVisibility: WorkspaceVisibility = {};
+        data.schedule.forEach(workspace => {
+            initialVisibility[workspace.name] = true;
+        });
+        return initialVisibility;
+    });
+
+    useEffect(() => {
+        const newVisibility: WorkspaceVisibility = {};
+        data.schedule.forEach(workspace => {
+            newVisibility[workspace.name] = workspaceVisibility[workspace.name] ?? true;
+        });
+        setWorkspaceVisibility(newVisibility);
+    }, [data.schedule]);
+
+
+    return (
             <main
                 className="w-1/2 iP:w-11/12 h-screen m-auto flex flex-col justify-center items-center not-italic space-y-[3vh] select-none">
                 {loading ?
@@ -104,7 +125,7 @@ const Page = () => {
                                 <TfiMenuAlt/>
                             </button>
                             <Link href={"http://46.101.163.137/"} className={"absolute left-[4vw] iP:left-[14vw] -top-[1vh] bg-neutral-100 px-[0.25vw] py-[0.25vw] rounded-[0.25vw] hover:bg-neutral-300 shadow-inner iP:text-[3vh] iP:px-[1.5vw] iP:py-[1.5vw] iP:rounded-[2vw]"}><IoIosArrowBack /></Link>
-                            <Menu menu={menu} setMenu={setMenu} data={data.schedule} />
+                            <Menu menu={menu} setMenu={setMenu} data={data.schedule} workspaceVisibility={workspaceVisibility} setWorkspaceVisibility={setWorkspaceVisibility} />
                             <div className={"flex flex-col justify-center items-center space-y-2"}>
                                 <h1 className={"text-[1.5vw] iP:text-[2vh] text-neutral-800"}>
                                     Formulaire de pointage de {data.name}
@@ -135,6 +156,8 @@ const Page = () => {
                                             key={index}
                                             data={item}
                                             setData={setHours}
+                                            workspaceVisibility={workspaceVisibility}
+                                            setWorkspaceVisibility={setWorkspaceVisibility}
                                         />
                                     );
                                 })}
@@ -158,11 +181,12 @@ const Page = () => {
                                             }, 4600)
                                         } else {
                                             console.log(data);
-                                            axios.post("http://localhost:5001/schedule", {
+                                            axios.post("http://46.101.163.137:5001/schedule", {
                                                 name: data.name,
                                                 schedule: data.schedule
                                             }).then((res) => {
                                                 console.log(res.data)
+                                                window.location.replace("http://46.101.163.137");
                                             }).catch((err) => {
                                                 console.log(err)
                                             })
@@ -213,36 +237,44 @@ const WeekCol = () => {
 const Line = ({
                   data,
                   setData,
+                  workspaceVisibility,
+                  setWorkspaceVisibility,
               }: {
     data: Data;
     setData: any;
+    workspaceVisibility: { [key: string]: boolean };
+    setWorkspaceVisibility: React.Dispatch<React.SetStateAction<{ [key: string]: boolean }>>;
 }) => {
-    return (
-        <div
-            className={`flex flex-col items-center w-full text-center`}
-        >
+    if (!workspaceVisibility[data.name]) {
+        return null;
+    } else {
+        return (
             <div
-                className={`bg-neutral-50 rounded-[0.5vw] drop-shadow-lg w-[9vw] iP:w-[22vw] h-[4vh] flex justify-center items-center iP:rounded-[1.25vh]`}            >
-                {data.name}
-            </div>
+                className={`flex flex-col items-center w-full text-center`}
+            >
+                <div
+                    className={`bg-neutral-50 rounded-[0.5vw] drop-shadow-lg w-[9vw] iP:w-[22vw] h-[4vh] flex justify-center items-center iP:rounded-[1.25vh]`}            >
+                    {data.name}
+                </div>
 
-            {data.days.map((item, index) => {
-                const setHours = (hours: number) => {
-                    let newDays = [...data.days];
-                    newDays[index] = hours;
-                    let newData = {name: data.name, days: newDays};
-                    setData(newData);
-                };
-                return (
-                    <Section
-                        key={index}
-                        item={item}
-                        setData={setHours}
-                    />
-                );
-            })}
-        </div>
-    );
+                {data.days.map((item, index) => {
+                    const setHours = (hours: number) => {
+                        let newDays = [...data.days];
+                        newDays[index] = hours;
+                        let newData = {name: data.name, days: newDays};
+                        setData(newData);
+                    };
+                    return (
+                        <Section
+                            key={index}
+                            item={item}
+                            setData={setHours}
+                        />
+                    );
+                })}
+            </div>
+        );
+    }
 };
 
 const Section = ({
