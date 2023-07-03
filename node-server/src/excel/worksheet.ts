@@ -68,13 +68,15 @@ const getWorksheet = async (properName:any, name:any[]) => {
         (new Date().getMonth() + 1) +
         "/" +
         new Date().getFullYear();
+    const dateAWeekAgo = new Date();
+    dateAWeekAgo.setDate(new Date().getDate() - 7);
     const weekAgo: string =
-        new Date().getDate() -
-        7 +
+        dateAWeekAgo.getDate() +
         "/" +
-        (new Date().getMonth() + 1) +
+        (dateAWeekAgo.getMonth() + 1) +
         "/" +
-        new Date().getFullYear();
+        dateAWeekAgo.getFullYear();
+
 
     function getWeekNumber(d: Date): number {
       const date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
@@ -101,7 +103,7 @@ const getWorksheet = async (properName:any, name:any[]) => {
         .style(centerBoldMedium);
     ws.cell(3, 4 + productivityCoefficient)
         .string(
-            "SEMAINE N°" + weekAgoWeekNumber + " du " + weekAgo + " - " + currentDate
+            `SEMAINE N°${weekAgoWeekNumber} du ${weekAgo} - ${currentDate}`
         )
         .style(centerBold);
 
@@ -230,13 +232,15 @@ const getWorksheet = async (properName:any, name:any[]) => {
           (new Date().getMonth() + 1) +
           "/" +
           new Date().getFullYear();
+      const dateAWeekAgo = new Date();
+      dateAWeekAgo.setDate(dateAWeekAgo.getDate() - 7);
       const weekAgo: string =
-          new Date().getDate() -
-          7 +
+          dateAWeekAgo.getDate() +
           "/" +
-          (new Date().getMonth() + 1) +
+          (dateAWeekAgo.getMonth() + 1) +
           "/" +
-          new Date().getFullYear();
+          dateAWeekAgo.getFullYear();
+
 
       function getWeekNumber(d: Date): number {
         const date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
@@ -263,7 +267,7 @@ const getWorksheet = async (properName:any, name:any[]) => {
           .style(centerBoldMedium);
       ws.cell(3, 4 + productivityCoefficient)
           .string(
-              "SEMAINE N°" + weekAgoWeekNumber + " du " + weekAgo + " - " + currentDate
+              `SEMAINE N°${weekAgoWeekNumber} du ${weekAgo} - ${currentDate}`
           )
           .style(centerBold);
 
