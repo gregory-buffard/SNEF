@@ -15,7 +15,7 @@ module.exports = {
         "white-low": "rgb(245 245 245 / 50%)",
       },
       dropShadow: {
-        "redish": "0 0 5px rgb(248 113 113 / 50%)"
+        "redish": "0 0 10px rgb(248 113 113 / 100%)"
       },
     },
   },
