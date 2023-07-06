@@ -14,6 +14,7 @@ import {PiWarningBold} from "react-icons/pi";
 
 export interface Data {
     name: string;
+    codeNumber: string;
     days: number[];
 }
 
@@ -23,22 +24,27 @@ const Page = () => {
             schedule: [
                 {
                     name: "Parking Public",
+                    codeNumber: "1WXQ00",
                     days: [0, 0, 0, 0, 0, 0, 0],
                 },
                 {
                     name: "Parking Privée",
+                    codeNumber: "1WXQ10",
                     days: [0, 0, 0, 0, 0, 0, 0],
                 },
                 {
                     name: "Maladie",
+                    codeNumber: "XX",
                     days: [0, 0, 0, 0, 0, 0, 0],
                 },
                 {
                     name: "Ferié",
+                    codeNumber: "F21007",
                     days: [0, 0, 0, 0, 0, 0, 0],
                 },
                 {
                     name: "Congés",
+                    codeNumber: "XX",
                     days: [0, 0, 0, 0, 0, 0, 0],
                 },
             ]
@@ -186,7 +192,7 @@ const Page = () => {
                                                 schedule: data.schedule
                                             }).then((res) => {
                                                 console.log(res.data)
-                                                window.location.replace("https://www.snef.cloud");
+                                                window.location.replace("https://snef.cloud");
                                             }).catch((err) => {
                                                 console.log(err)
                                             })
@@ -261,7 +267,7 @@ const Line = ({
                     const setHours = (hours: number) => {
                         let newDays = [...data.days];
                         newDays[index] = hours;
-                        let newData = {name: data.name, days: newDays};
+                        let newData = {name: data.name,codeNumber: data.codeNumber, days: newDays};
                         setData(newData);
                     };
                     return (

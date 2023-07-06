@@ -2,7 +2,7 @@
 
 import React, {useEffect, useState} from "react";
 import Cookies, {set} from "js-cookie";
-import {AiOutlineSearch, AiOutlineForm} from "react-icons/ai";
+import {AiOutlineForm} from "react-icons/ai";
 import Image from "next/image";
 import brand from "../public/assets/brand.svg";
 import {useRouter} from "next/navigation";
@@ -35,7 +35,7 @@ const Page = () => {
     const [darkenBackground, setDarkenBackground] = useState(false);
 
     return (
-        <main className="w-screen h-screen flex justify-center items-center flex-col space-y-[3vh] overflow-y-hidden">
+        <main className="w-screen h-screen flex justify-center items-center flex-col space-y-[3vh]">
             <div className={darkenBackground ? 'absolute w-screen h-screen bg-neutral-900 z-10 bg-opacity-50 transition-all ease-in-out duration-[2s] backdrop-blur-lg flex justify-center items-center' : 'transition-all ease-in-out duration-1000'}></div>
 
             <div className={'absolute w-screen m-auto top-0 z-20 flex justify-center items-center'}>

@@ -12,8 +12,8 @@ const getWorksheet = async (properName:any, name:any[]) => {
         return sum !== 0;
       });
     };
-    let tablesList = name[0].schedule.map((worker: { name: string; days: any; carDetails: any }) => {
-      return [worker.name, worker.days];
+    let tablesList = name[0].schedule.map((worker: { name: string; codeNumber: string; days: any}) => {
+      return [worker.name, worker.codeNumber, worker.days];
     });
     tablesList = filterNullProductivity(tablesList);
     const productivityCoefficient = tablesList.length;
@@ -136,9 +136,10 @@ const getWorksheet = async (properName:any, name:any[]) => {
     for (let i = 0; i < productivityCoefficient; i++) {
       ws.column(3 + i).setWidth(15);
       ws.cell(3, 3 + i).string(tablesList[i][0]).style(centerBold);
+      ws.cell(4, 3 + i).string(tablesList[i][1]).style(centerBold);
       for (let j = 0; j < days.length; j++) {
         ws.cell(5 + j, 3 + i)
-            .number(tablesList[i][1][j])
+            .number(tablesList[i][2][j])
             .style(centerBold);
       }
     }
@@ -182,8 +183,8 @@ const getWorksheet = async (properName:any, name:any[]) => {
           return sum !== 0;
         });
       };
-      let tablesList = name[m].schedule.map((worker: { name: string; days: any; carDetails: any }) => {
-        return [worker.name, worker.days];
+      let tablesList = name[m].schedule.map((worker: { name: string; codeNumber: string; days: any;}) => {
+        return [worker.name, worker.codeNumber, worker.days];
       });
       tablesList = filterNullProductivity(tablesList);
       const productivityCoefficient = tablesList.length;
@@ -300,9 +301,10 @@ const getWorksheet = async (properName:any, name:any[]) => {
       for (let i = 0; i < productivityCoefficient; i++) {
         ws.column(3 + i).setWidth(15);
         ws.cell(3, 3 + i).string(tablesList[i][0]).style(centerBold);
+        ws.cell(4, 3 + i).string(tablesList[i][1]).style(centerBold);
         for (let j = 0; j < days.length; j++) {
           ws.cell(5 + j, 3 + i)
-              .number(tablesList[i][1][j])
+              .number(tablesList[i][2][j])
               .style(centerBold);
         }
       }
@@ -323,7 +325,7 @@ const getWorksheet = async (properName:any, name:any[]) => {
             .style(centerBold);
       }
       ws.cell(13, 1)
-          .string("©" + new Date().getFullYear() + " Foton Inc.")
+          .string("©" + new Date().getFullYear() + " Grégory Buffard")
           .style(centerBold);
     }
     return wb;
