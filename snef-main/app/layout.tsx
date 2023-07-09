@@ -27,7 +27,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <title>SNEF</title>
       <link rel={'icon'} href={'/favicon.ico'} />
     </head>
-      <body className="m-auto overflow-y-hidden">{children}</body>
+      <body className="m-auto">{children}</body>
     </html>
   );
 }

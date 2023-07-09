@@ -36,16 +36,14 @@ const Page = () => {
 
     return (
         <main className="w-screen h-screen flex justify-center items-center flex-col space-y-[3vh]">
-            <div className={darkenBackground ? 'absolute w-screen h-screen bg-neutral-900 z-10 bg-opacity-50 transition-all ease-in-out duration-[2s] backdrop-blur-lg flex justify-center items-center' : 'transition-all ease-in-out duration-1000'}></div>
+            <div className={`${darkenBackground ? 'absolute w-screen h-screen bg-neutral-900 z-10 bg-opacity-50 transition-all ease-in-out duration-[2s] backdrop-blur-lg flex justify-center items-center' : 'transition-all ease-in-out duration-1000 hidden'}`}></div>
 
-            <div className={'absolute w-screen m-auto top-0 z-20 flex justify-center items-center'}>
-                <div className={`bg-neutral-400 text-neutral-100 bg-opacity-50 border-neutral-400 border-[0.25vh] flex justify-center items-center space-x-[0.5vw] iP:space-x-[1vh] text-[2vh] iP:text-[1.25vh] px-[1vw] iP:px-[1vh] py-[0.5vh] rounded-[0.75vw] iP:rounded-[1vh] ${darkenBackground ? 'translate-y-0 transition-all ease-in-out duration-200 delay-[3s]' : '-translate-y-[10vw] iP:-translate-y-[30vw] transition-all ease-in-out duration-200 delay-0'}`}>
-                    <HiOutlineLightBulb className={'text-[1.25vw] iP:text-[3.5vh] drop-shadow-amberish text-amber-300'} />
-                    <p className={'drop-shadow-whiteish'}>Effectuez plusieurs téléchargements en séparant les noms et prénoms par une virgule + un espace (&quot;, &quot;).</p>
-                </div>
+            <div className={`absolute top-0 z-20 bg-neutral-400 text-neutral-100 bg-opacity-50 border-neutral-400 border-[0.25vh] flex justify-center items-center space-x-[0.5vw] iP:space-x-[1vh] text-[2vh] iP:text-[1.25vh] px-[1vw] iP:px-[1vh] py-[0.5vh] rounded-[0.75vw] iP:rounded-[1vh] transition-all ease-in-out duration-200 ${darkenBackground ? 'translate-y-[2vw] delay-[3s]' : '-translate-y-[10vw] iP:-translate-y-[20vh] delay-0'}`}>
+                <HiOutlineLightBulb className={'text-[1.25vw] iP:text-[3.5vh] drop-shadow-amberish text-amber-300'} />
+                <p className={'drop-shadow-whiteish'}>Effectuez plusieurs téléchargements en séparant les noms et prénoms par une virgule + un espace (&quot;, &quot;).</p>
             </div>
 
-            <div className={`absolute top-0 bg-white-low text-red-600 border-neutral-100 border-[0.25vh] flex justify-center items-center space-x-[0.5vw] text-[2vh] px-[1vw] py-[0.5vh] rounded-[0.75vw] iP:rounded-[1vh] transition duration-800 ease-in-out iP:text-[1.25vh] backdrop-blur-md drop-shadow-2xl ${alertBox ? "translate-y-[2vw]" : "-translate-y-[10vw] iP:-translate-y-[10vh]"}`}><PiWarningBold className={"text-[1.25vw] iP:text-[1.75vh] drop-shadow-redish"} /><p className={"drop-shadow-redish"}>Le pointage ne peut être effectué que pour une seule personne à la fois.</p></div>
+            <div className={`absolute top-0 bg-white-low text-red-600 border-neutral-100 border-[0.25vh] flex justify-center items-center space-x-[0.5vw] text-[2vh] px-[1vw] py-[0.5vh] rounded-[0.75vw] iP:rounded-[1vh] transition duration-800 ease-in-out iP:text-[1.25vh] backdrop-blur-md drop-shadow-2xl ${alertBox ? "translate-y-[2vw]" : "-translate-y-[10vw] iP:-translate-y-[20vh]"}`}><PiWarningBold className={"text-[1.25vw] iP:text-[1.75vh] drop-shadow-redish"} /><p className={"drop-shadow-redish"}>Le pointage ne peut être effectué que pour une seule personne à la fois.</p></div>
 
                 <Image src={brand} width={0} height={0} alt={"SNEF brand logo"} className={"w-[20vw] drop-shadow-xl iP:w-[35vh]"}/>
 
