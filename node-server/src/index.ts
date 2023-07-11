@@ -4,6 +4,7 @@ import data from "./data.json";
 import getWorksheet from "./excel/worksheet";
 import { getWeekNumber } from "./WeekCal";
 import Worker from "./schema/Worker";
+import Workspace from "./schema/Workspace";
 import mongoose from "mongoose";
 
 const app = express();
@@ -37,6 +38,28 @@ app.post("/schedule", async (req, res) => {
       return res.status(500).send("Internal server error");
     });
 });
+
+app.post('/addWorkspace', async (req, res) => {
+  const newWorkspaceData = req.body;
+
+  // Create a new workspace using the model
+  const newWorkspace = new Workspace(newWorkspaceData);
+
+  // Save the new workspace to the database
+  newWorkspace.save()
+      .then(() => res.status(200).send('Workspace saved successfully'))
+      .catch((err: Error) => {
+        console.error(err);
+        res.status(500).send('Error saving workspace');
+      });
+});
+
+app.get('/getWorkspaces', async (req, res) => {
+  const workspaces = await Workspace.find({});
+  res.json(workspaces);
+});
+
+
 
 app.get("/worker", async (req, res) => {
   if (!req.query || !req.query.name)

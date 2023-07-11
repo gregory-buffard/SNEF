@@ -1,15 +1,16 @@
 "use client";
 
 import React, {useEffect, useState} from "react";
-import {IoIosArrowUp, IoIosArrowDown, IoIosArrowBack} from "react-icons/io";
+import {IoIosArrowUp, IoIosArrowDown, IoIosArrowBack, IoMdAddCircle} from "react-icons/io";
 import {LuClipboardEdit} from "react-icons/lu";
 import {TfiMenuAlt} from "react-icons/tfi";
 import Cookies from "js-cookie";
 import axios from "axios";
-import {CgClose} from "react-icons/cg";
 import Link from "next/link";
 import Menu from "./Menu";
 import {PiWarningBold} from "react-icons/pi";
+import {BsDatabaseFillAdd} from "react-icons/bs";
+import {CgClose} from "react-icons/cg";
 
 
 export interface Data {
@@ -19,68 +20,46 @@ export interface Data {
 }
 
 const Page = () => {
-        const initData: { name: string, schedule: Data[] } = {
-            name: "",
-            schedule: [
-                {
-                    name: "Parking Public",
-                    codeNumber: "1WXQ00",
-                    days: [0, 0, 0, 0, 0, 0, 0],
-                },
-                {
-                    name: "Parking Privée",
-                    codeNumber: "1WXQ10",
-                    days: [0, 0, 0, 0, 0, 0, 0],
-                },
-                {
-                    name: "Maladie",
-                    codeNumber: "XX",
-                    days: [0, 0, 0, 0, 0, 0, 0],
-                },
-                {
-                    name: "Ferié",
-                    codeNumber: "F21007",
-                    days: [0, 0, 0, 0, 0, 0, 0],
-                },
-                {
-                    name: "Congés",
-                    codeNumber: "XX",
-                    days: [0, 0, 0, 0, 0, 0, 0],
-                },
-            ]
-        }
-        const [data, setData] = useState(initData);
-        const [loading, setLoading] = useState(true);
+    const [data, setData] = useState<{ name: string; schedule: Data[] }>({
+        name: "",
+        schedule: [],
+    });
 
-        const currentDate: string =
-            new Date().getDate() +
-            "/" +
-            (new Date().getMonth() + 1) +
-            "/" +
-            new Date().getFullYear();
-        const dateAWeekAgo = new Date();
-        dateAWeekAgo.setDate(dateAWeekAgo.getDate() - 7);
-        const weekAgo: string =
-            dateAWeekAgo.getDate() +
-            "/" +
-            (dateAWeekAgo.getMonth() + 1) +
-            "/" +
-            dateAWeekAgo.getFullYear();
+    const [loading, setLoading] = useState(true);
 
+    const currentDate: string =
+        new Date().getDate() +
+        "/" +
+        (new Date().getMonth() + 1) +
+        "/" +
+        new Date().getFullYear();
+    const dateAWeekAgo = new Date();
+    dateAWeekAgo.setDate(dateAWeekAgo.getDate() - 7);
+    const weekAgo: string = dateAWeekAgo.getDate() + "/" + (dateAWeekAgo.getMonth() + 1) + "/" + dateAWeekAgo.getFullYear();
 
     const [menu, setMenu] = useState(false);
 
-        useEffect(() => {
+    function mergeSchedules(initSchedule:any, userSchedule:any) {
+        const userScheduleMap = new Map(userSchedule.map((item:any) => [item.name, item]));
+
+        // If workspace already exists in user schedule, use that, otherwise use initial workspace
+        return initSchedule.map((workspace:any) => userScheduleMap.get(workspace.name) || workspace);
+    }
+
+    useEffect(() => {
             const name = Cookies.get("name")
             if (name == undefined) {
                 window.location.href = "/"
                 return
             }
-            axios.get(`https://api.snef.cloud/worker/?name=${name}`).then((res) => {
-                console.log(res.data)
-                setData({
-                    name: name,
-                    schedule: (res.data.schedule && res.data.schedule.length >0 ? res.data.schedule : initData.schedule)
+            axios.get(`http://localhost:5001/worker/?name=${name}`).then((res) => {
+                console.log(res.data);
+                axios.get('http://localhost:5001/getWorkspaces').then((response) => {
+                    const mergedSchedules = mergeSchedules(response.data, res.data.schedule || [])
+                    setData({
+                        name: name,
+                        schedule: mergedSchedules
+                    })
                 })
                 setLoading(false)
             }).catch((err) => {
@@ -111,8 +90,39 @@ const Page = () => {
         setWorkspaceVisibility(newVisibility);
     }, [data.schedule]);
 
+        const [newWorkspaceName, setNewWorkspaceName] = useState("");
+        const [newWorkspaceCode, setNewWorkspaceCode] = useState("");
 
-    return (
+    async function handleNewWorkspaceSubmit(e: React.FormEvent) {
+        e.preventDefault();
+
+        const newWorkspace: Data = {
+            name: newWorkspaceName,
+            codeNumber: newWorkspaceCode,
+            days: [0, 0, 0, 0, 0, 0, 0]
+        };
+
+        try {
+            const response = await axios.post('http://localhost:5001/addWorkspace', newWorkspace);
+            console.log(response.data);
+
+            setData({
+                ...data,
+                schedule: [...data.schedule, newWorkspace]
+            });
+
+        } catch (error) {
+            console.error(error);
+        }
+
+        setNewWorkspaceName("");
+        setNewWorkspaceCode("");
+    }
+
+
+    const [addWorkspaceDialog, setAddWorkspaceDialog] = useState(false);
+
+        return (
             <main
                 className="w-1/2 iP:w-11/12 h-screen m-auto flex flex-col justify-center items-center not-italic space-y-[3vh] select-none">
                 {loading ?
@@ -130,8 +140,42 @@ const Page = () => {
                             >
                                 <TfiMenuAlt/>
                             </button>
-                            <Link href={"https://www.snef.cloud"} className={"absolute left-[4vw] iP:left-[14vw] -top-[1vh] bg-neutral-100 px-[0.25vw] py-[0.25vw] rounded-[0.25vw] hover:bg-neutral-300 shadow-inner iP:text-[3vh] iP:px-[1.5vw] iP:py-[1.5vw] iP:rounded-[2vw]"}><IoIosArrowBack /></Link>
+                            <button
+                                type={"button"}
+                                className={
+                                    "absolute left-[4vw] iP:left-[14vw] top-[-1vh] bg-neutral-100 px-[0.25vw] py-[0.25vw] rounded-[0.25vw] hover:bg-neutral-300 shadow-inner iP:text-[3vh] iP:px-[1.5vw] iP:py-[1.5vw] iP:rounded-[2vw]"
+                                }
+                                onClick={() => {
+                                    setAddWorkspaceDialog(!addWorkspaceDialog);
+                                }}
+                            >
+                                <BsDatabaseFillAdd />
+                            </button>
+
+                            <Link href={"https://www.snef.cloud"} className={"absolute left-[6vw] iP:left-[26vw] -top-[1vh] bg-neutral-100 px-[0.25vw] py-[0.25vw] rounded-[0.25vw] hover:bg-neutral-300 shadow-inner iP:text-[3vh] iP:px-[1.5vw] iP:py-[1.5vw] iP:rounded-[2vw]"}>
+                                <IoIosArrowBack />
+                            </Link>
+
                             <Menu menu={menu} setMenu={setMenu} data={data.schedule} workspaceVisibility={workspaceVisibility} setWorkspaceVisibility={setWorkspaceVisibility} />
+
+                            <div className={`absolute bg-neutral-100 iP:bg-snef iP:backdrop-blur-xl px-[1vw] py-[1vh] rounded-[0.5vw] drop-shadow-lg iP:drop-shadow-none top-[3vh] iP:top-[-3vh] transition duration-200 ease-in-out left-0 flex flex-col justify-start items-start iP:w-[90vw] iP:h-screen iP:z-10 iP:rounded-r-[2vh] iP:justify-center iP:items-baseline iP:space-y-[2vh] iP:pl-[25%] iP:text-[2vh] iP:text-neutral-100 iP:border-y-[0.25vh] iP:border-r-[0.25vh] iP:border-teal-700 iP:border-opacity-25 space-y-[1vh] ${addWorkspaceDialog ? 'translate-x-[2vw]  iP:translate-x-0' : 'translate-x-[-15vw] iP:translate-x-[-100vw]'}`}>
+
+                                <button type={"button"} onClick={() => setAddWorkspaceDialog(!addWorkspaceDialog)} className={"hidden iP:block absolute right-[3vw] top-[3vw] text-[3vh] px-[1vw] py-[1vw] text-center hover:text-neutral-300 hover:bg-neutral-900 hover:bg-opacity-50 rounded-full transition-all duration-200 ease-in-out"}><CgClose /></button>
+
+                                <div>
+                                    <p>Nom du chantier</p>
+                                    <input type={'text'} value={newWorkspaceName} onChange={(e) => setNewWorkspaceName(e.target.value)} className={'iP:text-neutral-800 border-[.1vw] iP:border-[.25vh] border-neutral-300 outline-none rounded-[.25vw] iP:rounded-[1vh] px-[.25vw] iP:px-[.5vh] py-[.25vh] bg-neutral-50 hover:bg-neutral-300 focus:bg-neutral-300 transition-colors duration-200 ease-in-out drop-shadow-xl'} />
+                                </div>
+
+                                <div>
+                                    <p>Code du chantier</p>
+                                    <input type={'text'} value={newWorkspaceCode} onChange={(e) => setNewWorkspaceCode(e.target.value)} className={'iP:text-neutral-800 border-[.1vw] iP:border-[.25vh] border-neutral-300 outline-none rounded-[.25vw] iP:rounded-[1vh] px-[.25vw] iP:px-[.5vh] py-[.25vh] bg-neutral-50 hover:bg-neutral-300 focus:bg-neutral-300 transition-colors duration-200 ease-in-out drop-shadow-xl'} />
+                                </div>
+
+                                <button type={'button'} onClick={handleNewWorkspaceSubmit} className={'iP:text-neutral-800 flex justify-start items-center space-x-[.25vw] iP:space-x-[.5vh] bg-neutral-300 px-[.5vw] iP:px-[1vh] py-[.5vh] rounded-[.25vw] iP:rounded-[1vh] shadow-inner hover:bg-neutral-400 transition-colors duration-200 ease-in-out'}><IoMdAddCircle /><p>Ajouter</p></button>
+
+                            </div>
+
                             <div className={"flex flex-col justify-center items-center space-y-2"}>
                                 <h1 className={"text-[1.5vw] iP:text-[2vh] text-neutral-800"}>
                                     Formulaire de pointage de {data.name}
@@ -187,7 +231,7 @@ const Page = () => {
                                             }, 4600)
                                         } else {
                                             console.log(data);
-                                            axios.post("https://api.snef.cloud/schedule", {
+                                            axios.post("http://localhost:5001/schedule", {
                                                 name: data.name,
                                                 schedule: data.schedule
                                             }).then((res) => {
