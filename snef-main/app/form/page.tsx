@@ -52,9 +52,9 @@ const Page = () => {
                 window.location.href = "/"
                 return
             }
-            axios.get(`http://localhost:5001/worker/?name=${name}`).then((res) => {
+            axios.get(`https://api.snef.cloud/worker/?name=${name}`).then((res) => {
                 console.log(res.data);
-                axios.get('http://localhost:5001/getWorkspaces').then((response) => {
+                axios.get('https://api.snef.cloud/getWorkspaces').then((response) => {
                     const mergedSchedules = mergeSchedules(response.data, res.data.schedule || [])
                     setData({
                         name: name,
@@ -103,7 +103,7 @@ const Page = () => {
         };
 
         try {
-            const response = await axios.post('http://localhost:5001/addWorkspace', newWorkspace);
+            const response = await axios.post('https://api.snef.cloud/addWorkspace', newWorkspace);
             console.log(response.data);
 
             setData({
@@ -231,7 +231,7 @@ const Page = () => {
                                             }, 4600)
                                         } else {
                                             console.log(data);
-                                            axios.post("http://localhost:5001/schedule", {
+                                            axios.post("https://api.snef.cloud/schedule", {
                                                 name: data.name,
                                                 schedule: data.schedule
                                             }).then((res) => {
