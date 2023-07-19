@@ -22,12 +22,14 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" className={`${font.className} scroll-smooth`}>
-    <head>
-      <title>SNEF</title>
-      <link rel={'icon'} href={'/favicon.ico'} />
-    </head>
-      <body className="m-auto">{children}</body>
-    </html>
+      <AuthProvider>
+        <html lang="en" className={`${font.className} scroll-smooth`}>
+        <head>
+          <title>SNEF</title>
+          <link rel={'icon'} href={'/favicon.ico'} />
+        </head>
+        <body className="m-auto">{children}</body>
+        </html>
+      </AuthProvider>
   );
 }

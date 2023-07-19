@@ -160,7 +160,7 @@ const getWorksheet = async (properName:any, name:any[]) => {
           .style(centerBold);
     }
     ws.cell(13, 1)
-        .string("©" + new Date().getFullYear() + " Foton Inc.")
+        .string("©" + new Date().getFullYear() + " Grégory Buffard")
         .style(centerBold);
 
     return wb;
