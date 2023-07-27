@@ -24,7 +24,7 @@ export default router.use(dbConnect).post(async (req:any, res:any) => {
         return res.status(200).json({ user: { username: user.username, role: user.role } });
     });*/
 
-import { NextApiRequest, NextApiResponse } from 'next';
+/*import { NextApiRequest, NextApiResponse } from 'next';
 import { verifyPassword, createToken } from '@/app/utils/auth';
 import { setCookie } from '@/app/utils/cookies';
 import User from '@/models/userModel';
@@ -51,4 +51,4 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             role: user.role,
         },
     });
-};
+};*/

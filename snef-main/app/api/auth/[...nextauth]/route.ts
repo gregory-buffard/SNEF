@@ -1,4 +1,4 @@
-import startDB from '@/lib/db';
+/*import startDB from '@/lib/db';
 import UserModel from "@/models/userModel";
 import NextAuth from 'next-auth'
 import CredentialProviders from 'next-auth/providers'
@@ -41,7 +41,7 @@ export default NextAuth({
             return session
         },
     },
-})
+})*/
 
 
 /*export const authOptions: NextAuthOptions = {

@@ -22,7 +22,6 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-      <AuthProvider>
         <html lang="en" className={`${font.className} scroll-smooth`}>
         <head>
           <title>SNEF</title>
@@ -30,6 +29,5 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         </head>
         <body className="m-auto">{children}</body>
         </html>
-      </AuthProvider>
   );
 }

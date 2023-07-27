@@ -25,6 +25,10 @@ const workerSchema = new mongoose.Schema({
             origin: "Non-definit",
             code: "Non-definit",
         }
+    },
+    interim: {
+        type: Boolean,
+        default: false
     }
 });
 

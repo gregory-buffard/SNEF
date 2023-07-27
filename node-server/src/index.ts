@@ -24,10 +24,12 @@ app.post("/schedule", async (req, res) => {
     return res.status(400).send("Missing name or schedule");
   const name = req.body.name.toString().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
   const schedule = req.body.schedule;
+  const interim = req.body.interim;
   Worker.findOne({ name: name })
     .then((worker) => {
       if (!worker) return res.status(400).send("Worker not found (huh?)");
       worker.schedule = schedule;
+      worker.interim = interim;
       worker.week = getWeekNumber(new Date());
       worker.save().then((worker) => {
         return res.status(200).send(worker);
@@ -59,8 +61,6 @@ app.get('/getWorkspaces', async (req, res) => {
   res.json(workspaces);
 });
 
-
-
 app.get("/worker", async (req, res) => {
   if (!req.query || !req.query.name)
     return res.status(400).send("Missing name");
@@ -89,13 +89,51 @@ app.get("/worker", async (req, res) => {
     });
 });
 
+app.get("/workers", async (req, res) => {
+  try {
+    let workers;
+    if (req.query.interim === 'true') {
+      workers = await Worker.find({ interim: true, name: {$nin: ['interim', 'snef']} });
+    } else if (req.query.interim === 'false') {
+        workers = await Worker.find({ interim: false, name: {$nin: ['interim', 'snef']} });
+    } else {
+      workers = await Worker.find({name: {$nin: ['interim', 'snef']}});
+    }
+    return res.status(200).json(workers);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send("Internal server error");
+  }
+});
+
 app.get("/download", async (req, res) => {
   if (!req.query || !req.query.name)
     return res.status(400).send("Missing name");
   const name = req.query.name.toString().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-  const properName = req.query.name.toString();
+  let properName = req.query.name.toString();
   const workers = [];
-  if (name.includes(",")) {
+  if (name.includes('interim')) {
+    const interimWorkers = await Worker.find({ interim: true, name: {$nin: ['interim', 'snef']} });
+    if (interimWorkers.length === 0) return res.status(404).send("No interim workers found");
+    for (let i = 0; i < interimWorkers.length; i++) {
+      const worker = await Worker.findOne({ name: interimWorkers[i].name });
+        if (!worker) return res.status(404).send("Worker not found");
+        workers.push(worker);
+    }
+    let workerNames = workers.map(worker => worker.name);
+    properName = workerNames.join(", ");
+  } else if (name.includes('snef')) {
+    const interimWorkers = await Worker.find({ interim: false, name: {$nin: ['interim', 'snef']}});
+    if (interimWorkers.length === 0) return res.status(404).send("No interim workers found");
+    for (let i = 0; i < interimWorkers.length; i++) {
+      const worker = await Worker.findOne({ name: interimWorkers[i].name });
+      if (!worker) return res.status(404).send("Worker not found");
+      workers.push(worker);
+    }
+    let workerNames = workers.map(worker => worker.name);
+    properName = workerNames.join(", ");
+  }
+  else if (name.includes(",")) {
     const names = name.split(", ");
     for (let i = 0; i < names.length; i++) {
       const worker = await Worker.findOne({ name: names[i] });
@@ -114,6 +152,8 @@ app.get("/download", async (req, res) => {
     (new Date().getMonth() + 1) +
     "-" +
     new Date().getFullYear();
+  if (name.includes('interim')) properName = 'intérimaire';
+    else if (name.includes('snef')) properName = 'SNEF';
   const filename = `files/Feuille de pointage ${properName} (${currentDate}).xlsx`;
   workbook.write(filename);
   setTimeout(() => {
@@ -128,3 +168,4 @@ app.listen(5001, () => {
     console.log("Connected to MongoDB");
   });
 });
+

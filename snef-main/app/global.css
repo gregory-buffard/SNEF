@@ -14,3 +14,25 @@
         background-color: #a3a3a3;
     }
 }
+
+.animateTick {
+    animation: tick 200ms linear 300ms forwards !important;
+}
+
+@keyframes tick {
+    0% {
+        opacity: 100%;
+        transform: scale(0);
+        rotate: 180deg;
+    }
+    50% {
+        opacity: 100%;
+        transform: scale(0.5);
+        rotate: 90deg;
+    }
+    100% {
+        opacity: 100%;
+        transform: scale(1);
+        rotate: 0deg;
+    }
+}

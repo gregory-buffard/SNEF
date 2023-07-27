@@ -12,7 +12,6 @@ import {PiWarningBold} from "react-icons/pi";
 import {BsDatabaseFillAdd} from "react-icons/bs";
 import {CgClose} from "react-icons/cg";
 
-
 export interface Data {
     name: string;
     codeNumber: string;
@@ -46,6 +45,8 @@ const Page = () => {
         return initSchedule.map((workspace:any) => userScheduleMap.get(workspace.name) || workspace);
     }
 
+    const [interimWorkers, setInterimWorkers] = useState([]);
+
     useEffect(() => {
             const name = Cookies.get("name")
             if (name == undefined) {
@@ -54,6 +55,7 @@ const Page = () => {
             }
             axios.get(`http://localhost:5001/worker/?name=${name}`).then((res) => {
                 console.log(res.data);
+                setInterim(res.data.interim || false);
                 axios.get('http://localhost:5001/getWorkspaces').then((response) => {
                     const mergedSchedules = mergeSchedules(response.data, res.data.schedule || [])
                     setData({
@@ -119,10 +121,11 @@ const Page = () => {
         setNewWorkspaceCode("");
     }
 
-
     const [addWorkspaceDialog, setAddWorkspaceDialog] = useState(false);
+    const [isInterim, setInterim] = useState(false);
+    const [selectedInterimWorker, setSelectedInterimWorker] = useState("");
 
-        return (
+    return (
             <main
                 className="w-1/2 iP:w-11/12 h-screen m-auto flex flex-col justify-center items-center not-italic space-y-[3vh] select-none">
                 {loading ?
@@ -214,16 +217,31 @@ const Page = () => {
                             </div>
 
                             <div className={"w-full flex px-[2vw] justify-between items-center text-[0.6vw] iP:text-[1.5vh]"}>
-                                <div className={"flex justify-center items-center space-x-[1vw] iP:space-x-[2vh] iP:w-[60vw]"}>
-                                    <input type={"checkbox"} className={"cursor-pointer"} onClick={() => {setSignature(!signature)}} />
-                                    <p>
-                                        Je confirme lexactitude des données ci-dessus et les signe en
-                                        cochant cette case.
-                                    </p>
+                                <div className={'flex flex-col justify-start items-start space-y-[1vh]'}>
+                                    <div className={"flex justify-center items-center space-x-[1vw] iP:space-x-[2vh] iP:w-[60vw]"}>
+                                        <input type={"checkbox"} className={"cursor-pointer"} onClick={() => {setSignature(!signature)}} />
+                                        <p>
+                                            Je confirme lexactitude des données ci-dessus et les signe en
+                                            cochant cette case.
+                                        </p>
+                                    </div>
+                                    <div className={'flex justify-center items-center space-x-[1vw] iP:space-x-[2vh] iP:w-[60vw]'}>
+                                        <p>Intérimaire ?</p>
+                                        <div className={'flex justify-center items-center space-x-[1vw]'}>
+                                            <div className={'flex justify-center items-center space-x-[0.5vw]'}>
+                                                <p>Oui</p>
+                                                <input type={'radio'} checked={isInterim} value={'true'} className={'cursor-pointer'} onChange={() => setInterim(true)} />
+                                            </div>
+                                            <div className={'flex justify-center items-center space-x-[0.5vw]'}>
+                                                <p>Non</p>
+                                                <input type={'radio'} checked={!isInterim} value={'false'} className={'cursor-pointer'} onChange={() => setInterim(false)} />
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <button
                                     type={"button"}
-                                    onClick={() => {
+                                    onClick={async () => {
                                         if (!signature) {
                                             setAlertBox(true)
                                             setTimeout(() => {
@@ -231,15 +249,17 @@ const Page = () => {
                                             }, 4600)
                                         } else {
                                             console.log(data);
-                                            axios.post("http://localhost:5001/schedule", {
-                                                name: data.name,
-                                                schedule: data.schedule
-                                            }).then((res) => {
-                                                console.log(res.data)
+                                            try {
+                                                const response = await axios.post("http://localhost:5001/schedule", {
+                                                    name: data.name,
+                                                    schedule: data.schedule,
+                                                    interim: isInterim
+                                                });
+                                                console.log(response.data);
                                                 window.location.replace("https://snef.cloud");
-                                            }).catch((err) => {
-                                                console.log(err)
-                                            })
+                                            } catch (err) {
+                                                console.log(err);
+                                            }
                                         }
                                     }}
                                     className={
