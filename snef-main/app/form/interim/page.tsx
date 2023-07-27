@@ -23,11 +23,8 @@ export interface Data {
     days: number[];
 }
 
-interface PageProps {
-    selectedWorker: string;
-}
 
-const Page: React.FC<PageProps> = ({selectedWorker}) => {
+const Page = () => {
         const [selectedInterimWorker, setSelectedInterimWorker] = useState<SNEFWorker | null>(null);
         const [selectedWorkerSchedule, setSelectedWorkerSchedule] = useState<any[]>([]);
         const [data, setData] = useState<{ name: string; schedule: Data[] }>({

@@ -1,6 +1,7 @@
 /node_modules
 /snef-main/.next
 /snef-main/next-env.d.ts
-/files
 /snef-main/build
+/.idea
+/snef-main/.vscode
 +```

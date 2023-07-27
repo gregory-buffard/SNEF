@@ -9,7 +9,6 @@ import {useRouter} from "next/navigation";
 import {PiWarningBold} from "react-icons/pi";
 import {FiDownload} from "react-icons/fi";
 import {HiOutlineLightBulb} from "react-icons/hi";
-import AuthProfileMenu from "@/components/AuthProfileMenu";
 
 const Page = () => {
     const [name, setName] = useState( "");
@@ -22,9 +21,9 @@ const Page = () => {
             }, 4600);
         } else {
             Cookies.set("name", name);
-            if (name === 'interim') {
+            if (name.toLowerCase() === 'interim') {
                 router.push("form/interim");
-            } else if (name === 'snef') {
+            } else if (name.toLowerCase() === 'snef') {
                 router.push("form/snef");
             } else {
                 router.push("/form");
