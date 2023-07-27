@@ -352,9 +352,9 @@ const Page: React.FC<PageProps> = ({selectedWorker}) => {
                                     </button>
                                 </div>
                             ) : (
-                                <div className={'flex flex-col justify-center items-center space-y-[1vw]'}>
-                                    <BsArrowUpShort className={`absolute text-[3vw] text-snef left-[5.25vw] top-[3vw] animate-bounce transition-opacity duration-200 ease-in-out ${selectUserDialog ? 'opacity-0' : 'opacity-100'}`} />
-                                    <h1 className={'text-[1.5vw]'}>Veuillez choisir un intérimaire dans le menu.</h1>
+                                <div className={'flex flex-col justify-center items-center'}>
+                                    <BsArrowUpShort className={`absolute text-[3vw] text-snef left-[5.25vw] iP:left-[17vh] top-[3vw] iP:top-[9vh] iP:text-[8vh] animate-bounce transition-opacity duration-200 ease-in-out ${selectUserDialog ? 'opacity-0' : 'opacity-100'}`} />
+                                    <h1 className={'text-[1.5vw] iP:text-[2vh]'}>Veuillez choisir un intérimaire dans le menu.</h1>
                                 </div>
                             )}
                         </>)}

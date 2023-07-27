@@ -9,7 +9,7 @@ import axios from "axios";
 import Link from "next/link";
 import Menu from "../Menu";
 import {PiWarningBold} from "react-icons/pi";
-import {BsDatabaseFillAdd} from "react-icons/bs";
+import {BsArrowUpShort, BsDatabaseFillAdd} from "react-icons/bs";
 import {CgClose} from "react-icons/cg";
 import WorkersList, {SNEFWorker} from '../WorkersList';
 import {HiUserGroup} from "react-icons/hi";
@@ -352,7 +352,8 @@ const Page: React.FC<PageProps> = ({selectedWorker}) => {
                                 </div>
                             ) : (
                                 <div className={'flex flex-col justify-center items-center'}>
-                                    <h1 className={'text-[1.5vw]'}>Veuillez choisir un employé dans le menu.</h1>
+                                    <BsArrowUpShort className={`absolute text-[3vw] text-snef left-[5.25vw] iP:left-[17vh] top-[3vw] iP:top-[9vh] iP:text-[8vh] animate-bounce transition-opacity duration-200 ease-in-out ${selectUserDialog ? 'opacity-0' : 'opacity-100'}`} />
+                                    <h1 className={'text-[1.5vw] iP:text-[2vh]'}>Veuillez choisir un intérimaire dans le menu.</h1>
                                 </div>
                             )}
                         </>)}

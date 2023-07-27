@@ -71,6 +71,7 @@ const Page = () => {
                     <button className={'flex justify-center items-center bg-neutral-300 w-1/2 h-[2.5vw] iP:h-[5vh] rounded-[0.25vw] iP:rounded-[1vh] space-x-[0.25vw] shadow-inner hover:bg-neutral-400 transition-all duration-200 ease-in-out'} onClick={handleClick}><AiOutlineForm className={"text-[1.25vw] iP:text-[2.5vh] drop-shadow-xl"} /><p>Modifier</p></button>
                 </div>
             </div>
+            <div className={'absolute w-full bottom-0 m-auto flex justify-center items-center text-[1vw] iP:text-[1vh]'}><p>&copy; 2023, Cette application est la propriété intellectuelle de Grégory Buffard ; Le logo et la marque <i>SNEF</i> sont la propriété intellectuelle de la Société Nouvelle Electric Flux.</p></div>
         </main>
     );
 };

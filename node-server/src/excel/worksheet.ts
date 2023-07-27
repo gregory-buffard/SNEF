@@ -27,7 +27,7 @@ const getWorksheet = async (properName:any, name:any[]) => {
         name: "Calibri",
       },
     });
-    wb.creator = "Foton Inc.";
+    wb.creator = "Grégory Buffard";
     const options: any = {
       sheetFormat: {
         defaultColWidth: 20,
@@ -44,6 +44,7 @@ const getWorksheet = async (properName:any, name:any[]) => {
     const centerBoldMedium = wb.createStyle({
       alignment: { horizontal: "left", vertical: "center" },
       font: { bold: true, color: "#000000", name: "Calibri", size: 18 },
+      border: {left: {style: 'medium', color: '#000000'}, top: {style: 'medium', color: '#000000'}, right: {style: 'medium', color: '#000000'}, bottom: {style: 'medium', color: '#000000'}}
     });
 
     const centerBold = wb.createStyle({
@@ -60,7 +61,130 @@ const getWorksheet = async (properName:any, name:any[]) => {
       font: { bold: true, color: "#000000", name: "Calibri", size: 12 },
     });
 
+    const yellowBackground = wb.createStyle({
+      fill: {
+        type: "pattern",
+        patternType: "solid",
+        fgColor: "#f5d271",
+      },
+      border: {
+        left: {
+          style: 'medium',
+            color: '#000000'
+        },
+        top: {
+            style: 'medium',
+            color: '#000000'
+        },
+        right: {
+            style: 'medium',
+            color: '#000000'
+        },
+        bottom: {
+            style: 'medium',
+            color: '#000000'
+        }
+      }
+    });
+
+    const logoBorder = wb.createStyle({
+      border: {
+        left: {
+            style: 'thick',
+            color: '#000000'
+        },
+        top: {
+            style: 'thick',
+            color: '#000000'
+        },
+        right: {
+            style: 'thick',
+            color: '#000000'
+        },
+        bottom: {
+            style: 'thick',
+            color: '#000000'
+        }
+      }
+    });
+
+    const sheetBorder = wb.createStyle({
+      border: {
+        left: {
+          style: 'thin',
+            color: '#000000'
+        },
+        top: {
+            style: 'thin',
+            color: '#000000'
+        },
+        right: {
+            style: 'thin',
+            color: '#000000'
+        },
+        bottom: {
+            style: 'thin',
+            color: '#000000'
+        }
+      }
+    });
+
+    const outsideTop = wb.createStyle({
+        border: {
+            top: {
+                style: 'thick',
+                color: '#000000'
+            }
+        }
+    })
+
+    const outsideRight = wb.createStyle({
+        border: {
+            right: {
+                style: 'thick',
+                color: '#000000'
+            }
+        }
+    })
+
+    const outsideBottom = wb.createStyle({
+        border: {
+            bottom: {
+                style: 'thick',
+                color: '#000000'
+            }
+        }
+    })
+
+    const outsideLeft = wb.createStyle({
+        border: {
+            left: {
+                style: 'thick',
+                color: '#000000'
+            }
+        }
+    })
+
     const ws: any = wb.addWorksheet("POINTAGE");
+
+    const logo = ws.addImage({
+      path: './node-server/src/excel/snef.png',
+      type: 'picture',
+      position: {
+        type: 'oneCellAnchor',
+        from: {
+          col: 1,
+          colOff: 0,
+          row: 1,
+          rowOff: 0
+        }
+      }
+    })
+
+    ws.cell(1, 1, 13, 4 + productivityCoefficient).style(sheetBorder);
+    ws.cell(1, 1).style(logoBorder);
+    ws.cell(12, 1, 12, 3 + productivityCoefficient).style(yellowBackground);
+    ws.cell(3, 3 + productivityCoefficient, 12, 3 + productivityCoefficient).style(yellowBackground);
 
     const currentDate: string =
         new Date().getDate() +
@@ -94,11 +218,10 @@ const getWorksheet = async (properName:any, name:any[]) => {
     );
     const weekAgoWeekNumber: number = getWeekNumber(dateWeekAgo);
 
-    ws.cell(1, 1).string("SNEF").style(centerBoldLarge);
     ws.cell(1, 2, 1, 4+productivityCoefficient, true)
         .string("FEUILLE DE POINTAGE")
         .style(centerBoldLarge);
-    ws.cell(2, 2, 2, 8, true)
+    ws.cell(2, 2, 2, 4+productivityCoefficient, true)
         .string("NOM : " + properName)
         .style(centerBoldMedium);
     ws.cell(3, 4 + productivityCoefficient)
@@ -106,6 +229,11 @@ const getWorksheet = async (properName:any, name:any[]) => {
             `SEMAINE N°${weekAgoWeekNumber} du ${weekAgo} - ${currentDate}`
         )
         .style(centerBold);
+
+    ws.cell(1, 1, 1, 4 + productivityCoefficient).style(outsideTop);
+    ws.cell(1, 1, 13, 1).style(outsideLeft);
+    ws.cell(1, 4 + productivityCoefficient, 13, 4 + productivityCoefficient).style(outsideRight);
+    ws.cell(13, 1, 13, 4 + productivityCoefficient).style(outsideBottom);
 
     let carType: string = carDetailsList[0];
     let carID: string = carDetailsList[1];
@@ -130,6 +258,11 @@ const getWorksheet = async (properName:any, name:any[]) => {
       ws.cell(5 + i, 1, 5 + i, 2, true)
           .string(days[i])
           .style(leftBold);
+    }
+    ws.row(1).setHeight(75);
+    ws.row(2).setHeight(50);
+    for (let i = 3; i < 14; i++) {
+      ws.row(i).setHeight(25);
     }
     ws.column(1).setWidth(25);
     ws.column(2).setWidth(2.5);
@@ -164,7 +297,7 @@ const getWorksheet = async (properName:any, name:any[]) => {
         .style(centerBold);
 
     return wb;
-  } else {
+  } else if (name.length > 1) {
     const wb = new xl.Workbook({
       defaultFont: {
         size: 12,
@@ -192,7 +325,7 @@ const getWorksheet = async (properName:any, name:any[]) => {
       const properNames = properName.split(", ");
 
       //Excel initialization :
-      wb.creator = "Foton Inc.";
+      wb.creator = "Grégory Buffard";
       const options: any = {
         sheetFormat: {
           defaultColWidth: 20,
@@ -207,8 +340,9 @@ const getWorksheet = async (properName:any, name:any[]) => {
       });
 
       const centerBoldMedium = wb.createStyle({
-        alignment: {horizontal: "left", vertical: "center"},
-        font: {bold: true, color: "#000000", name: "Calibri", size: 18},
+        alignment: { horizontal: "left", vertical: "center" },
+        font: { bold: true, color: "#000000", name: "Calibri", size: 18 },
+        border: {left: {style: 'medium', color: '#000000'}, top: {style: 'medium', color: '#000000'}, right: {style: 'medium', color: '#000000'}, bottom: {style: 'medium', color: '#000000'}}
       });
 
       const centerBold = wb.createStyle({
@@ -225,7 +359,130 @@ const getWorksheet = async (properName:any, name:any[]) => {
         font: {bold: true, color: "#000000", name: "Calibri", size: 12},
       });
 
-      const ws: any = wb.addWorksheet("POINTAGE " + properNames[m]);
+      const yellowBackground = wb.createStyle({
+        fill: {
+          type: "pattern",
+          patternType: "solid",
+          fgColor: "#f5d271",
+        },
+        border: {
+          left: {
+            style: 'medium',
+            color: '#000000'
+          },
+          top: {
+            style: 'medium',
+            color: '#000000'
+          },
+          right: {
+            style: 'medium',
+            color: '#000000'
+          },
+          bottom: {
+            style: 'medium',
+            color: '#000000'
+          }
+        }
+      });
+
+      const logoBorder = wb.createStyle({
+        border: {
+          left: {
+            style: 'thick',
+            color: '#000000'
+          },
+          top: {
+            style: 'thick',
+            color: '#000000'
+          },
+          right: {
+            style: 'thick',
+            color: '#000000'
+          },
+          bottom: {
+            style: 'thick',
+            color: '#000000'
+          }
+        }
+      });
+
+      const sheetBorder = wb.createStyle({
+        border: {
+          left: {
+            style: 'thin',
+            color: '#000000'
+          },
+          top: {
+            style: 'thin',
+            color: '#000000'
+          },
+          right: {
+            style: 'thin',
+            color: '#000000'
+          },
+          bottom: {
+            style: 'thin',
+            color: '#000000'
+          }
+        }
+      });
+
+      const outsideTop = wb.createStyle({
+        border: {
+          top: {
+            style: 'thick',
+            color: '#000000'
+          }
+        }
+      })
+
+      const outsideRight = wb.createStyle({
+        border: {
+          right: {
+            style: 'thick',
+            color: '#000000'
+          }
+        }
+      })
+
+      const outsideBottom = wb.createStyle({
+        border: {
+          bottom: {
+            style: 'thick',
+            color: '#000000'
+          }
+        }
+      })
+
+      const outsideLeft = wb.createStyle({
+        border: {
+          left: {
+            style: 'thick',
+            color: '#000000'
+          }
+        }
+      })
+
+      const ws: any = wb.addWorksheet(`POINTAGE de ${properNames[m]}`);
+
+      const logo = ws.addImage({
+        path: './node-server/src/excel/snef.png',
+        type: 'picture',
+        position: {
+          type: 'oneCellAnchor',
+          from: {
+            col: 1,
+            colOff: 0,
+            row: 1,
+            rowOff: 0
+          }
+        }
+      })
+
+      ws.cell(1, 1, 13, 4 + productivityCoefficient).style(sheetBorder);
+      ws.cell(1, 1).style(logoBorder);
+      ws.cell(12, 1, 12, 3 + productivityCoefficient).style(yellowBackground);
+      ws.cell(3, 3 + productivityCoefficient, 12, 3 + productivityCoefficient).style(yellowBackground);
 
       const currentDate: string =
           new Date().getDate() +
@@ -259,11 +516,10 @@ const getWorksheet = async (properName:any, name:any[]) => {
       );
       const weekAgoWeekNumber: number = getWeekNumber(dateWeekAgo);
 
-      ws.cell(1, 1).string("SNEF").style(centerBoldLarge);
       ws.cell(1, 2, 1, 4+productivityCoefficient, true)
           .string("FEUILLE DE POINTAGE")
           .style(centerBoldLarge);
-      ws.cell(2, 2, 2, 8, true)
+      ws.cell(2, 2, 2, 4+productivityCoefficient, true)
           .string("NOM : " + properNames[m])
           .style(centerBoldMedium);
       ws.cell(3, 4 + productivityCoefficient)
@@ -271,6 +527,11 @@ const getWorksheet = async (properName:any, name:any[]) => {
               `SEMAINE N°${weekAgoWeekNumber} du ${weekAgo} - ${currentDate}`
           )
           .style(centerBold);
+
+      ws.cell(1, 1, 1, 4 + productivityCoefficient).style(outsideTop);
+      ws.cell(1, 1, 13, 1).style(outsideLeft);
+      ws.cell(1, 4 + productivityCoefficient, 13, 4 + productivityCoefficient).style(outsideRight);
+      ws.cell(13, 1, 13, 4 + productivityCoefficient).style(outsideBottom);
 
       let carType: string = carDetailsList[0];
       let carID: string = carDetailsList[1];
@@ -295,6 +556,11 @@ const getWorksheet = async (properName:any, name:any[]) => {
         ws.cell(5 + i, 1, 5 + i, 2, true)
             .string(days[i])
             .style(leftBold);
+      }
+      ws.row(1).setHeight(75);
+      ws.row(2).setHeight(50);
+      for (let i = 3; i < 14; i++) {
+        ws.row(i).setHeight(25);
       }
       ws.column(1).setWidth(25);
       ws.column(2).setWidth(2.5);
