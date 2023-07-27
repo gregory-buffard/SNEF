@@ -64,16 +64,16 @@ const Page: React.FC<PageProps> = ({selectedWorker}) => {
                 window.location.href = "/"
                 return
             } else if (name == "interim") {
-                axios.get("http://localhost:5001/workers/?interim=true").then((res) => {
+                axios.get("https://api.snef.cloud/workers/?interim=true").then((res) => {
                     setInterimWorkers(res.data);
                 }).catch((err) => {
                     console.log(err);
                 });
             }
-            axios.get(`http://localhost:5001/worker/?name=${name}`).then((res) => {
+            axios.get(`https://api.snef.cloud/worker/?name=${name}`).then((res) => {
                 console.log(res.data);
                 setInterim(res.data.interim || false);
-                axios.get('http://localhost:5001/getWorkspaces').then((response) => {
+                axios.get('https://api.snef.cloud/getWorkspaces').then((response) => {
                     const mergedSchedules = mergeSchedules(response.data, res.data.schedule || [])
                     setData({
                         name: name,
@@ -89,10 +89,10 @@ const Page: React.FC<PageProps> = ({selectedWorker}) => {
     useEffect(() => {
         if (selectedInterimWorker !== null) {
             setInterim(selectedInterimWorker.interim);
-            axios.get(`http://localhost:5001/worker/?name=${selectedInterimWorker.name}`)
+            axios.get(`https://api.snef.cloud/worker/?name=${selectedInterimWorker.name}`)
                 .then((res) => {
                     let workerData = res.data;
-                    axios.get('http://localhost:5001/getWorkspaces').then((response) => {
+                    axios.get('https://api.snef.cloud/getWorkspaces').then((response) => {
                         const allWorkspaces = response.data;
                         allWorkspaces.forEach((workspace:any) => {
                             if (!workerData.schedule.find((scheduleItem:any) => scheduleItem.name === workspace.name)) {
@@ -146,7 +146,7 @@ const Page: React.FC<PageProps> = ({selectedWorker}) => {
             };
 
             try {
-                const response = await axios.post('http://localhost:5001/addWorkspace', newWorkspace);
+                const response = await axios.post('https://api.snef.cloud/addWorkspace', newWorkspace);
                 console.log(response.data);
 
                 setData({
@@ -169,7 +169,7 @@ const Page: React.FC<PageProps> = ({selectedWorker}) => {
         const [confirmationBox, setConfirmationBox] = useState(false);
 
         useEffect(() => {
-            axios.get('http://localhost:5001/getWorkspaces')
+            axios.get('https://api.snef.cloud/getWorkspaces')
                 .then(res => {
                     setAllWorkspaces(res.data);
                 })
@@ -320,7 +320,7 @@ const Page: React.FC<PageProps> = ({selectedWorker}) => {
                                                 console.log(data);
                                                 if (selectedInterimWorker !== null) {
                                                     try {
-                                                        const response = await axios.post("http://localhost:5001/schedule", {
+                                                        const response = await axios.post("https://api.snef.cloud/schedule", {
                                                             name: selectedInterimWorker.name,
                                                             schedule: selectedWorkerSchedule,
                                                             interim: isInterim
