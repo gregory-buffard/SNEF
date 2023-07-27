@@ -10,9 +10,7 @@ const font = IBM_Plex_Sans({
 export default function RootLayout({ children }: { children: ReactNode }) {
     return (
         <html lang="en">
-        <head>
-        </head>
-        <body  className={`${font.className} scroll-smooth overflow-y-auto`}>{children}</body>
+        <body className={`${font.className} scroll-smooth overflow-y-auto`}>{children}</body>
         </html>
     );
 }
