@@ -2,4 +2,6 @@
 /snef-main/.next
 /snef-main/next-env.d.ts
 /snef-main/build
+/.idea
+/snef-main/.vscode
 +```
