@@ -186,7 +186,7 @@ const Page = () => {
                             <button
                                 type={"button"}
                                 className={
-                                    "absolute left-[2vw] top-[-1vh] bg-neutral-100 px-[0.25vw] py-[0.25vw] rounded-[0.25vw] hover:bg-neutral-300 shadow-inner iP:text-[3vh] iP:px-[1.5vw] iP:py-[1.5vw] iP:rounded-[2vw]"
+                                    "absolute left-[2vw] iP:left-[2vh] top-[-1vh] bg-neutral-100 px-[0.25vw] py-[0.25vw] rounded-[0.25vw] hover:bg-neutral-300 shadow-inner iP:text-[3vh] iP:px-[1.5vw] iP:py-[1.5vw] iP:rounded-[2vw]"
                                 }
                                 onClick={() => {
                                     setMenu(!menu);
@@ -197,7 +197,7 @@ const Page = () => {
                             <button
                                 type={"button"}
                                 className={
-                                    "absolute left-[4vw] iP:left-[14vw] top-[-1vh] bg-neutral-100 px-[0.25vw] py-[0.25vw] rounded-[0.25vw] hover:bg-neutral-300 shadow-inner iP:text-[3vh] iP:px-[1.5vw] iP:py-[1.5vw] iP:rounded-[2vw]"
+                                    "absolute left-[4vw] iP:left-[10vw] top-[-1vh] bg-neutral-100 px-[0.25vw] py-[0.25vw] rounded-[0.25vw] hover:bg-neutral-300 shadow-inner iP:text-[3vh] iP:px-[1.5vw] iP:py-[1.5vw] iP:rounded-[2vw]"
                                 }
                                 onClick={() => {
                                     setAddWorkspaceDialog(!addWorkspaceDialog);
@@ -208,9 +208,9 @@ const Page = () => {
 
                             <Menu menu={menu} setMenu={setMenu} data={data.schedule} workspaceVisibility={workspaceVisibility} setWorkspaceVisibility={setWorkspaceVisibility} />
 
-                            <button type={'button'} onClick={() => setSelectUserDialog(!selectUserDialog)} className={"absolute left-[6vw] top-[-1vh] bg-neutral-100 px-[0.25vw] py-[0.25vw] rounded-[0.25vw] hover:bg-neutral-300 shadow-inner iP:text-[3vh] iP:px-[1.5vw] iP:py-[1.5vw] iP:rounded-[2vw]"}><HiUserGroup /></button>
+                            <button type={'button'} onClick={() => setSelectUserDialog(!selectUserDialog)} className={"absolute left-[6vw] iP:left-[18vh] top-[-1vh] bg-neutral-100 px-[0.25vw] py-[0.25vw] rounded-[0.25vw] hover:bg-neutral-300 shadow-inner iP:text-[3vh] iP:px-[1.5vw] iP:py-[1.5vw] iP:rounded-[2vw]"}><HiUserGroup /></button>
 
-                            <Link href={"https://www.snef.cloud"} className={"absolute right-[2vw] iP:left-[26vw] -top-[1vh] bg-neutral-100 px-[0.25vw] py-[0.25vw] rounded-[0.25vw] hover:bg-neutral-300 shadow-inner iP:text-[3vh] iP:px-[1.5vw] iP:py-[1.5vw] iP:rounded-[2vw]"}>
+                            <Link href={"https://www.snef.cloud"} className={"absolute right-[2vw] iP:right-[2vw] -top-[1vh] bg-neutral-100 px-[0.25vw] py-[0.25vw] rounded-[0.25vw] hover:bg-neutral-300 shadow-inner iP:text-[3vh] iP:px-[1.5vw] iP:py-[1.5vw] iP:rounded-[2vw]"}>
                                 <IoIosArrowBack />
                             </Link>
 
@@ -348,7 +348,7 @@ const Page = () => {
                             ) : (
                                 <div className={'flex flex-col justify-center items-center'}>
                                     <BsArrowUpShort className={`absolute text-[3vw] text-snef left-[5.25vw] iP:left-[17vh] top-[3vw] iP:top-[9vh] iP:text-[8vh] animate-bounce transition-opacity duration-200 ease-in-out ${selectUserDialog ? 'opacity-0' : 'opacity-100'}`} />
-                                    <h1 className={'text-[1.5vw] iP:text-[2vh]'}>Veuillez choisir un intérimaire dans le menu.</h1>
+                                    <h1 className={'text-[1.5vw] iP:text-[2vh]'}>Veuillez choisir un employé dans le menu.</h1>
                                 </div>
                             )}
                         </>)}
