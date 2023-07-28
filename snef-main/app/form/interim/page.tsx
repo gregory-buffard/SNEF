@@ -84,7 +84,7 @@ const Page = () => {
         }, [])
 
     useEffect(() => {
-        if (selectedInterimWorker !== null) {
+        if (selectedInterimWorker !== null && selectedInterimWorker !== undefined) {
             setInterim(selectedInterimWorker.interim);
             axios.get(`https://api.snef.cloud/worker/?name=${selectedInterimWorker.name}`)
                 .then((res) => {
