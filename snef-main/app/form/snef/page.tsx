@@ -57,7 +57,7 @@ const Page = () => {
             if (name == undefined) {
                 window.location.href = "/"
                 return
-            } else if (name == "snef") {
+            } else if (name.toLowerCase() == "snef") {
                 axios.get("https://api.snef.cloud/workers/?interim=false").then((res) => {
                     setInterimWorkers(res.data);
                 }).catch((err) => {
@@ -186,32 +186,38 @@ const Page = () => {
                             <button
                                 type={"button"}
                                 className={
-                                    "absolute left-[2vw] iP:left-[2vh] top-[-1vh] bg-neutral-100 px-[0.25vw] py-[0.25vw] rounded-[0.25vw] hover:bg-neutral-300 shadow-inner iP:text-[3vh] iP:px-[1.5vw] iP:py-[1.5vw] iP:rounded-[2vw]"
+                                    "absolute left-[2vw] iP:left-[2vw] top-[-1vh] bg-neutral-100 px-[0.25vw] py-[0.25vw] rounded-[0.25vw] hover:bg-neutral-300 shadow-inner iP:text-[3vh] iP:px-[1.5vw] iP:py-[1.5vw] iP:rounded-[2vw] group flex justify-center items-center"
                                 }
                                 onClick={() => {
                                     setMenu(!menu);
                                 }}
                             >
                                 <TfiMenuAlt/>
+                                <p className={'absolute text-tag font-medium transition-all duration-500 ease-in-out group-hover:translate-y-[2.5vh] opacity-0 group-hover:opacity-100 bg-neutral-900 bg-opacity-50 text-neutral-100 px-[0.5vw] py-[0.5vh] rounded-[0.5vw] -z-10 iP:hidden'}>Liste</p>
                             </button>
                             <button
                                 type={"button"}
                                 className={
-                                    "absolute left-[4vw] iP:left-[10vw] top-[-1vh] bg-neutral-100 px-[0.25vw] py-[0.25vw] rounded-[0.25vw] hover:bg-neutral-300 shadow-inner iP:text-[3vh] iP:px-[1.5vw] iP:py-[1.5vw] iP:rounded-[2vw]"
+                                    "absolute left-[4vw] iP:left-[10vw] top-[-1vh] bg-neutral-100 px-[0.25vw] py-[0.25vw] rounded-[0.25vw] hover:bg-neutral-300 shadow-inner iP:text-[3vh] iP:px-[1.5vw] iP:py-[1.5vw] iP:rounded-[2vw] group flex justify-center items-center"
                                 }
                                 onClick={() => {
                                     setAddWorkspaceDialog(!addWorkspaceDialog);
                                 }}
                             >
                                 <BsDatabaseFillAdd />
+                                <p className={'absolute text-tag font-medium transition-all duration-500 ease-in-out group-hover:translate-y-[2.5vh] opacity-0 group-hover:opacity-100 bg-neutral-900 bg-opacity-50 text-neutral-100 px-[0.5vw] py-[0.5vh] rounded-[0.5vw] -z-10 iP:hidden'}>Ajouter</p>
                             </button>
 
                             <Menu menu={menu} setMenu={setMenu} data={data.schedule} workspaceVisibility={workspaceVisibility} setWorkspaceVisibility={setWorkspaceVisibility} />
 
-                            <button type={'button'} onClick={() => setSelectUserDialog(!selectUserDialog)} className={"absolute left-[6vw] iP:left-[18vh] top-[-1vh] bg-neutral-100 px-[0.25vw] py-[0.25vw] rounded-[0.25vw] hover:bg-neutral-300 shadow-inner iP:text-[3vh] iP:px-[1.5vw] iP:py-[1.5vw] iP:rounded-[2vw]"}><HiUserGroup /></button>
+                            <button type={'button'} onClick={() => setSelectUserDialog(!selectUserDialog)} className={"absolute left-[6vw] iP:left-[18vh] top-[-1vh] bg-neutral-100 px-[0.25vw] py-[0.25vw] rounded-[0.25vw] hover:bg-neutral-300 shadow-inner iP:text-[3vh] iP:px-[1.5vw] iP:py-[1.5vw] iP:rounded-[2vw] group flex justify-center items-center"}>
+                                <HiUserGroup />
+                                <p className={'absolute text-tag font-medium transition-all duration-500 ease-in-out group-hover:translate-y-[2.5vh] opacity-0 group-hover:opacity-100 bg-neutral-900 bg-opacity-50 text-neutral-100 px-[0.5vw] py-[0.5vh] rounded-[0.5vw] -z-10 iP:hidden backdrop-blur-sm'}>Employés</p>
+                            </button>
 
-                            <Link href={"https://www.snef.cloud"} className={"absolute right-[2vw] iP:right-[2vw] -top-[1vh] bg-neutral-100 px-[0.25vw] py-[0.25vw] rounded-[0.25vw] hover:bg-neutral-300 shadow-inner iP:text-[3vh] iP:px-[1.5vw] iP:py-[1.5vw] iP:rounded-[2vw]"}>
+                            <Link href={"https://www.snef.cloud"} className={"absolute right-[2vw] iP:right-[2vw] -top-[1vh] bg-neutral-100 px-[0.25vw] py-[0.25vw] rounded-[0.25vw] hover:bg-neutral-300 shadow-inner iP:text-[3vh] iP:px-[1.5vw] iP:py-[1.5vw] iP:rounded-[2vw] group flex justify-center items-center"}>
                                 <IoIosArrowBack />
+                                <p className={'absolute text-tag font-medium transition-all duration-500 ease-in-out group-hover:translate-y-[2.5vh] opacity-0 group-hover:opacity-100 bg-neutral-900 bg-opacity-50 text-neutral-100 px-[0.5vw] py-[0.5vh] rounded-[0.5vw] -z-10 iP:hidden'}>Acceuil</p>
                             </Link>
 
                             <div className={`absolute bg-neutral-100 iP:bg-snef iP:backdrop-blur-xl px-[1vw] py-[1vh] rounded-[0.5vw] drop-shadow-lg iP:drop-shadow-none top-[3vh] iP:top-[-3vh] transition duration-200 ease-in-out left-0 flex flex-col justify-start items-start iP:w-[90vw] iP:h-screen iP:z-10 iP:rounded-r-[2vh] iP:justify-center iP:items-baseline iP:space-y-[2vh] iP:pl-[25%] iP:text-[2vh] iP:text-neutral-100 iP:border-y-[0.25vh] iP:border-r-[0.25vh] iP:border-teal-700 iP:border-opacity-25 space-y-[1vh] ${addWorkspaceDialog ? 'translate-x-[2vw]  iP:translate-x-0' : 'translate-x-[-15vw] iP:translate-x-[-100vw]'}`}>
@@ -347,7 +353,7 @@ const Page = () => {
                                 </div>
                             ) : (
                                 <div className={'flex flex-col justify-center items-center'}>
-                                    <BsArrowUpShort className={`absolute text-[3vw] text-snef left-[5.25vw] iP:left-[17vh] top-[3vw] iP:top-[9vh] iP:text-[8vh] animate-bounce transition-opacity duration-200 ease-in-out ${selectUserDialog ? 'opacity-0' : 'opacity-100'}`} />
+                                    <BsArrowUpShort className={`absolute text-[3vw] text-snef left-[5.25vw] iP:left-[17vh] top-[3vw] iP:top-[9vh] iP:text-[8vh] animate-bounce transition-opacity duration-200 ease-in-out -z-20 ${selectUserDialog ? 'opacity-0' : 'opacity-100'}`} />
                                     <h1 className={'text-[1.5vw] iP:text-[2vh]'}>Veuillez choisir un employé dans le menu.</h1>
                                 </div>
                             )}

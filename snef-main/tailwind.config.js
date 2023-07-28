@@ -21,6 +21,9 @@ module.exports = {
         "whiteish": "0 0 10px rgb(245 245 245 / 100%)",
         'greenish': '0 0 10px rgb(22 163 74 / 100%)',
       },
+      fontSize: {
+        'tag': '0.5vw',
+      }
     },
   },
   plugins: [],
