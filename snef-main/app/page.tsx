@@ -39,13 +39,11 @@ const Page = () => {
 
     const [alertBox, setAlertBox] = useState(false);
     const [darkenBackground, setDarkenBackground] = useState(false);
-    const magicLines = ['Effectuez plusieurs téléchargements en séparant les noms et prénoms par une virgule + un espace ", ".', 'Essayez "interim".', 'Essayez "snef".', 'Société Nouvelle Electric Flux (SNEF), cool non ?']
     const [magicLine, setMagicLine] = useState('');
     useEffect(() => {
-        setTimeout(() => {
-            setMagicLine(magicLines[Math.floor(Math.random()*magicLines.length)]);
-        }, 200);
-    })
+        const magicLines = ['Effectuez plusieurs téléchargements en séparant les noms et prénoms par une virgule + un espace ", ".', 'Essayez "interim".', 'Essayez "snef".', 'Société Nouvelle Electric Flux (SNEF), cool non ?']
+        setMagicLine(magicLines[Math.floor(Math.random()*magicLines.length)]);
+    }, [])
 
     return (
         <main className="w-screen h-screen flex justify-center items-center flex-col space-y-[3vh]">
