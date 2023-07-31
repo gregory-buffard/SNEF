@@ -139,10 +139,15 @@ const Page = () => {
                                 }
                                 onClick={() => {
                                     setMenu(!menu);
+                                    switch (true) {
+                                        case addWorkspaceDialog:
+                                            setAddWorkspaceDialog(false);
+                                            break;
+                                    }
                                 }}
                             >
                                 <TfiMenuAlt/>
-                                <p className={'absolute text-tag font-medium transition-all duration-500 ease-in-out group-hover:translate-y-[2.5vh] opacity-0 group-hover:opacity-100 bg-neutral-900 bg-opacity-50 text-neutral-100 px-[0.5vw] py-[0.5vh] rounded-[0.5vw] -z-10 iP:hidden'}>Liste</p>
+                                <p className={'absolute text-tag font-medium transition-all duration-500 ease-in-out group-hover:translate-y-[1.75vw] opacity-0 group-hover:opacity-100 bg-neutral-900 bg-opacity-50 text-neutral-100 px-[0.5vw] py-[0.5vh] rounded-[0.5vw] -z-10 iP:hidden'}>Liste</p>
                             </button>
                             <button
                                 type={"button"}
@@ -151,15 +156,20 @@ const Page = () => {
                                 }
                                 onClick={() => {
                                     setAddWorkspaceDialog(!addWorkspaceDialog);
+                                    switch (true) {
+                                        case menu:
+                                            setMenu(false);
+                                            break;
+                                    }
                                 }}
                             >
                                 <BsDatabaseFillAdd />
-                                <p className={'absolute text-tag font-medium transition-all duration-500 ease-in-out group-hover:translate-y-[2.5vh] opacity-0 group-hover:opacity-100 bg-neutral-900 bg-opacity-50 text-neutral-100 px-[0.5vw] py-[0.5vh] rounded-[0.5vw] -z-10 iP:hidden'}>Ajouter</p>
+                                <p className={'absolute text-tag font-medium transition-all duration-500 ease-in-out group-hover:translate-y-[1.75vw] opacity-0 group-hover:opacity-100 bg-neutral-900 bg-opacity-50 text-neutral-100 px-[0.5vw] py-[0.5vh] rounded-[0.5vw] -z-10 iP:hidden'}>Ajouter</p>
                             </button>
 
                             <Link href={"https://www.snef.cloud"} className={"absolute right-[2vw] iP:right-[2vw] -top-[1vh] bg-neutral-100 px-[0.25vw] py-[0.25vw] rounded-[0.25vw] hover:bg-neutral-300 shadow-inner iP:text-[3vh] iP:px-[1.5vw] iP:py-[1.5vw] iP:rounded-[2vw] group flex justify-center items-center"}>
                                 <IoIosArrowBack />
-                                <p className={'absolute text-tag font-medium transition-all duration-500 ease-in-out group-hover:translate-y-[2.5vh] opacity-0 group-hover:opacity-100 bg-neutral-900 bg-opacity-50 text-neutral-100 px-[0.5vw] py-[0.5vh] rounded-[0.5vw] -z-10 iP:hidden'}>Acceuil</p>
+                                <p className={'absolute text-tag font-medium transition-all duration-500 ease-in-out group-hover:translate-y-[1.75vw] opacity-0 group-hover:opacity-100 bg-neutral-900 bg-opacity-50 text-neutral-100 px-[0.5vw] py-[0.5vh] rounded-[0.5vw] -z-10 iP:hidden'}>Acceuil</p>
                             </Link>
 
                             <Menu menu={menu} setMenu={setMenu} data={data.schedule} workspaceVisibility={workspaceVisibility} setWorkspaceVisibility={setWorkspaceVisibility} />

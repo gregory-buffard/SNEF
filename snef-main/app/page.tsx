@@ -22,11 +22,11 @@ const Page = () => {
         } else {
             Cookies.set("name", name);
             if (name.toLowerCase() === 'interim') {
-                router.push("form/interim");
+                router.push("form/GroupInput");
             } else if (name.toLowerCase() === 'snef') {
-                router.push("form/snef");
+                router.push("form/GroupInput");
             } else {
-                router.push("/form");
+                router.push("/form/GroupInput");
             }
         }
     }
