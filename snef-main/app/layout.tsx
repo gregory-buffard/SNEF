@@ -1,6 +1,7 @@
 import "./global.css";
 import { ReactNode } from "react";
 import { IBM_Plex_Sans } from "next/font/google";
+import {ClerkProvider} from "@clerk/nextjs";
 
 const font = IBM_Plex_Sans({
   weight: ["500", "400"],
@@ -22,6 +23,7 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
+      <ClerkProvider>
         <html lang="en" className={`${font.className} scroll-smooth`}>
         <head>
           <title>SNEF</title>
@@ -29,5 +31,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         </head>
         <body className="m-auto">{children}</body>
         </html>
+        </ClerkProvider>
   );
 }
