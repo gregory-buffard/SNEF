@@ -2,19 +2,75 @@
 @tailwind components;
 @tailwind utilities;
 
+
+/* - NAVIGATION COMPONENT (Nav.tsx) - */
+/* Navigation button */
+.navApp {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.navButton {
+    background-color: #e5e5e5;
+    width: 2.5vw;
+    height: 2.5vw;
+    border-radius: 0.75vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5vw;
+    padding: 0.5vw 0.5vw 0.5vw 0.5vw;
+    transition: 200ms ease-in-out background-color;
+}
+
+.contextTag {
+    position: absolute;
+    font-weight: 500;
+    transition: 200ms ease-in-out opacity;
+    transform: translateY(2.15vw);
+    background-color: #171717;
+    color: #f5f5f5;
+    padding: 0.5vh 0.5vw 0.5vh 0.5vw;
+    border-radius: 0.5vw;
+    text-align: center;
+    white-space: nowrap;
+    opacity: 0;
+}
+
+.navButton:hover {
+    background-color: #d4d4d4;
+    transition: 200ms ease-in-out background-color;
+}
+
+/* - RESPONSIVE DESIGN - */
 @media (max-width: 1291px) {
+    /* Schedule form scrollbar */
     .scrollbarStyle::-webkit-scrollbar {
         height: 2vh;
     }
+
     .scrollbarStyle::-webkit-scrollbar-thumb {
         background-color: #d4d4d4;
         border-radius: 1vh;
     }
+
     .scrollbarStyle::-webkit-scrollbar-thumb:hover {
         background-color: #a3a3a3;
     }
+
+    /* Navigation button */
+    .navButton {
+        width: 4vh;
+        height: 4vh;
+        border-radius: 1.25vh;
+        font-size: 3vh;
+        padding: 0.75vh 0.75vh 0.75vh 0.75vh;
+    }
 }
 
+/* - ANIMATION SECTION - */
 .animateTick {
     animation: tick 200ms linear 300ms forwards !important;
 }

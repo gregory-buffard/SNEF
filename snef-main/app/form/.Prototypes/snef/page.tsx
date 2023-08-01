@@ -9,12 +9,11 @@ import axios from "axios";
 import Link from "next/link";
 import Menu from "../Menu";
 import {PiWarningBold} from "react-icons/pi";
-import {BsDatabaseFillAdd} from "react-icons/bs";
+import {BsArrowUpShort, BsDatabaseFillAdd} from "react-icons/bs";
 import {CgClose} from "react-icons/cg";
 import WorkersList, {SNEFWorker} from '../WorkersList';
 import {HiUserGroup} from "react-icons/hi";
 import {TiTick} from "react-icons/ti";
-import {BsArrowUpShort} from "react-icons/bs";
 
 
 export interface Data {
@@ -22,8 +21,6 @@ export interface Data {
     codeNumber: string;
     days: number[];
 }
-
-
 const Page = () => {
         const [selectedInterimWorker, setSelectedInterimWorker] = useState<SNEFWorker | null>(null);
         const [selectedWorkerSchedule, setSelectedWorkerSchedule] = useState<any[]>([]);
@@ -33,7 +30,7 @@ const Page = () => {
         });
 
         const [loading, setLoading] = useState(true);
-    const [allWorkspaces, setAllWorkspaces] = useState([]);
+        const [allWorkspaces, setAllWorkspaces] = useState([]);
         const currentDate: string =
             new Date().getDate() +
             "/" +
@@ -60,8 +57,8 @@ const Page = () => {
             if (name == undefined) {
                 window.location.href = "/"
                 return
-            } else if (name.toLowerCase() == "interim") {
-                axios.get("https://api.snef.cloud/workers/?interim=true").then((res) => {
+            } else if (name.toLowerCase() == "snef") {
+                axios.get("https://api.snef.cloud/workers/?interim=false").then((res) => {
                     setInterimWorkers(res.data);
                 }).catch((err) => {
                     console.log(err);
@@ -83,32 +80,32 @@ const Page = () => {
             })
         }, [])
 
-    useEffect(() => {
-        if (selectedInterimWorker !== null && selectedInterimWorker !== undefined) {
-            setInterim(selectedInterimWorker.interim);
-            axios.get(`https://api.snef.cloud/worker/?name=${selectedInterimWorker.name}`)
-                .then((res) => {
-                    let workerData = res.data;
-                    axios.get('https://api.snef.cloud/getWorkspaces').then((response) => {
-                        const allWorkspaces = response.data;
-                        allWorkspaces.forEach((workspace:any) => {
-                            if (!workerData.schedule.find((scheduleItem:any) => scheduleItem.name === workspace.name)) {
-                                workerData.schedule.push(workspace);
-                            }
-                        });
+        useEffect(() => {
+            if (selectedInterimWorker !== null && selectedInterimWorker !== undefined) {
+                setInterim(selectedInterimWorker.interim);
+                axios.get(`https://api.snef.cloud/worker/?name=${selectedInterimWorker.name}`)
+                    .then((res) => {
+                        let workerData = res.data;
+                        axios.get('https://api.snef.cloud/getWorkspaces').then((response) => {
+                            const allWorkspaces = response.data;
+                            allWorkspaces.forEach((workspace:any) => {
+                                if (!workerData.schedule.find((scheduleItem:any) => scheduleItem.name === workspace.name)) {
+                                    workerData.schedule.push(workspace);
+                                }
+                            });
+                        })
+                        setData(workerData);
+                        setSelectedWorkerSchedule(workerData.schedule);
+                        setSignature(false);
                     })
-                    setData(workerData);
-                    setSelectedWorkerSchedule(workerData.schedule);
-                    setSignature(false);
-                })
-                .catch((err) => {
-                    console.log(err);
-                });
-        }
-    }, [selectedInterimWorker]);
+                    .catch((err) => {
+                        console.log(err);
+                    });
+            }
+        }, [selectedInterimWorker]);
 
 
-    const [alertBox, setAlertBox] = useState(false);
+        const [alertBox, setAlertBox] = useState(false);
         const [signature, setSignature] = useState(false);
 
         interface WorkspaceVisibility {
@@ -176,7 +173,7 @@ const Page = () => {
         }, []);
 
 
-    return (
+        return (
             <main
                 className="w-1/2 iP:w-11/12 h-screen m-auto flex flex-col justify-center items-center not-italic space-y-[3vh] select-none">
                 {loading ?
@@ -189,14 +186,22 @@ const Page = () => {
                             <button
                                 type={"button"}
                                 className={
-                                    "absolute left-[2vw] iP:left-[2vh] top-[-1vh] bg-neutral-100 px-[0.25vw] py-[0.25vw] rounded-[0.25vw] hover:bg-neutral-300 shadow-inner iP:text-[3vh] iP:px-[1.5vw] iP:py-[1.5vw] iP:rounded-[2vw] group flex justify-center items-center"
+                                    "absolute left-[2vw] iP:left-[2vw] top-[-1vh] bg-neutral-100 px-[0.25vw] py-[0.25vw] rounded-[0.25vw] hover:bg-neutral-300 shadow-inner iP:text-[3vh] iP:px-[1.5vw] iP:py-[1.5vw] iP:rounded-[2vw] group flex justify-center items-center"
                                 }
                                 onClick={() => {
                                     setMenu(!menu);
+                                    switch (true) {
+                                        case addWorkspaceDialog:
+                                            setAddWorkspaceDialog(!addWorkspaceDialog);
+                                            break;
+                                        case selectUserDialog:
+                                            setSelectUserDialog(false);
+                                            break;
+                                    }
                                 }}
                             >
                                 <TfiMenuAlt/>
-                                <p className={'absolute text-tag font-medium transition-all duration-500 ease-in-out group-hover:translate-y-[2.5vh] opacity-0 group-hover:opacity-100 bg-neutral-900 bg-opacity-50 text-neutral-100 px-[0.5vw] py-[0.5vh] rounded-[0.5vw] -z-10 iP:hidden'}>Liste</p>
+                                <p className={'absolute text-tag font-medium transition-all duration-500 ease-in-out group-hover:translate-y-[1.75vw] opacity-0 group-hover:opacity-100 bg-neutral-900 bg-opacity-50 text-neutral-100 px-[0.5vw] py-[0.5vh] rounded-[0.5vw] -z-10 iP:hidden'}>Liste</p>
                             </button>
                             <button
                                 type={"button"}
@@ -205,22 +210,38 @@ const Page = () => {
                                 }
                                 onClick={() => {
                                     setAddWorkspaceDialog(!addWorkspaceDialog);
+                                    switch (true) {
+                                        case selectUserDialog:
+                                            setSelectUserDialog(false);
+                                        case menu:
+                                            setMenu(false);
+                                            break;
+                                    }
                                 }}
                             >
                                 <BsDatabaseFillAdd />
-                                <p className={'absolute text-tag font-medium transition-all duration-500 ease-in-out group-hover:translate-y-[2.5vh] opacity-0 group-hover:opacity-100 bg-neutral-900 bg-opacity-50 text-neutral-100 px-[0.5vw] py-[0.5vh] rounded-[0.5vw] -z-10 iP:hidden'}>Ajouter</p>
+                                <p className={'absolute text-tag font-medium transition-all duration-500 ease-in-out group-hover:translate-y-[1.75vw] opacity-0 group-hover:opacity-100 bg-neutral-900 bg-opacity-50 text-neutral-100 px-[0.5vw] py-[0.5vh] rounded-[0.5vw] -z-10 iP:hidden'}>Ajouter</p>
                             </button>
 
                             <Menu menu={menu} setMenu={setMenu} data={data.schedule} workspaceVisibility={workspaceVisibility} setWorkspaceVisibility={setWorkspaceVisibility} />
 
-                            <button type={'button'} onClick={() => setSelectUserDialog(!selectUserDialog)} className={"absolute left-[6vw] iP:left-[18vh] top-[-1vh] bg-neutral-100 px-[0.25vw] py-[0.25vw] rounded-[0.25vw] hover:bg-neutral-300 shadow-inner iP:text-[3vh] iP:px-[1.5vw] iP:py-[1.5vw] iP:rounded-[2vw] group flex justify-center items-center"}>
+                            <button type={'button'} onClick={() => {
+                                setSelectUserDialog(!selectUserDialog);
+                                switch (true) {
+                                    case addWorkspaceDialog:
+                                        setAddWorkspaceDialog(false);
+                                    case menu:
+                                        setMenu(false);
+                                        break;
+                                }
+                            }} className={"absolute left-[6vw] iP:left-[18vh] top-[-1vh] bg-neutral-100 px-[0.25vw] py-[0.25vw] rounded-[0.25vw] hover:bg-neutral-300 shadow-inner iP:text-[3vh] iP:px-[1.5vw] iP:py-[1.5vw] iP:rounded-[2vw] group flex justify-center items-center"}>
                                 <HiUserGroup />
-                                <p className={'absolute text-tag font-medium transition-all duration-500 ease-in-out group-hover:translate-y-[2.5vh] opacity-0 group-hover:opacity-100 bg-neutral-900 bg-opacity-50 text-neutral-100 px-[0.5vw] py-[0.5vh] rounded-[0.5vw] -z-10 iP:hidden backdrop-blur-sm'}>Intérimaires</p>
+                                <p className={'absolute text-tag font-medium transition-all duration-500 ease-in-out group-hover:translate-y-[1.75vw] opacity-0 group-hover:opacity-100 bg-neutral-900 bg-opacity-50 text-neutral-100 px-[0.5vw] py-[0.5vh] rounded-[0.5vw] -z-10 iP:hidden backdrop-blur-sm'}>Employés</p>
                             </button>
 
                             <Link href={"https://www.snef.cloud"} className={"absolute right-[2vw] iP:right-[2vw] -top-[1vh] bg-neutral-100 px-[0.25vw] py-[0.25vw] rounded-[0.25vw] hover:bg-neutral-300 shadow-inner iP:text-[3vh] iP:px-[1.5vw] iP:py-[1.5vw] iP:rounded-[2vw] group flex justify-center items-center"}>
                                 <IoIosArrowBack />
-                                <p className={'absolute text-tag font-medium transition-all duration-500 ease-in-out group-hover:translate-y-[2.5vh] opacity-0 group-hover:opacity-100 bg-neutral-900 bg-opacity-50 text-neutral-100 px-[0.5vw] py-[0.5vh] rounded-[0.5vw] -z-10 iP:hidden'}>Acceuil</p>
+                                <p className={'absolute text-tag font-medium transition-all duration-500 ease-in-out group-hover:translate-y-[1.75vw] opacity-0 group-hover:opacity-100 bg-neutral-900 bg-opacity-50 text-neutral-100 px-[0.5vw] py-[0.5vh] rounded-[0.5vw] -z-10 iP:hidden'}>Acceuil</p>
                             </Link>
 
                             <div className={`absolute bg-neutral-100 iP:bg-snef iP:backdrop-blur-xl px-[1vw] py-[1vh] rounded-[0.5vw] drop-shadow-lg iP:drop-shadow-none top-[3vh] iP:top-[-3vh] transition duration-200 ease-in-out left-0 flex flex-col justify-start items-start iP:w-[90vw] iP:h-screen iP:z-10 iP:rounded-r-[2vh] iP:justify-center iP:items-baseline iP:space-y-[2vh] iP:pl-[25%] iP:text-[2vh] iP:text-neutral-100 iP:border-y-[0.25vh] iP:border-r-[0.25vh] iP:border-teal-700 iP:border-opacity-25 space-y-[1vh] ${addWorkspaceDialog ? 'translate-x-[2vw]  iP:translate-x-0' : 'translate-x-[-15vw] iP:translate-x-[-100vw]'}`}>
@@ -229,15 +250,15 @@ const Page = () => {
 
                                 <div>
                                     <p>Nom du chantier</p>
-                                    <input type={'text'} value={newWorkspaceName} onChange={(e) => setNewWorkspaceName(e.target.value)} className={'iP:text-neutral-800 border-[.1vw] iP:border-[.25vh] border-neutral-300 outline-none rounded-[.25vw] iP:rounded-[1vh] px-[.25vw] iP:px-[.5vh] py-[.25vh] bg-neutral-50 hover:bg-neutral-300 focus:bg-neutral-300 transition-colors duration-200 ease-in-out shadow-inner'} />
+                                    <input type={'text'} value={newWorkspaceName} onChange={(e) => setNewWorkspaceName(e.target.value)} className={'iP:text-neutral-800 border-[.1vw] iP:border-[.25vh] border-neutral-300 outline-none rounded-[.25vw] iP:rounded-[1vh] px-[.25vw] iP:px-[.5vh] py-[.25vh] bg-neutral-50 hover:bg-neutral-300 focus:bg-neutral-300 transition-colors duration-200 ease-in-out drop-shadow-xl'} />
                                 </div>
 
                                 <div>
                                     <p>Code du chantier</p>
-                                    <input type={'text'} value={newWorkspaceCode} onChange={(e) => setNewWorkspaceCode(e.target.value)} className={'iP:text-neutral-800 border-[.1vw] iP:border-[.25vh] border-neutral-300 outline-none rounded-[.25vw] iP:rounded-[1vh] px-[.25vw] iP:px-[.5vh] py-[.25vh] bg-neutral-50 hover:bg-neutral-300 focus:bg-neutral-300 transition-colors duration-200 ease-in-out shadow-inner'} />
+                                    <input type={'text'} value={newWorkspaceCode} onChange={(e) => setNewWorkspaceCode(e.target.value)} className={'iP:text-neutral-800 border-[.1vw] iP:border-[.25vh] border-neutral-300 outline-none rounded-[.25vw] iP:rounded-[1vh] px-[.25vw] iP:px-[.5vh] py-[.25vh] bg-neutral-50 hover:bg-neutral-300 focus:bg-neutral-300 transition-colors duration-200 ease-in-out drop-shadow-xl'} />
                                 </div>
 
-                                <button type={'button'} onClick={handleNewWorkspaceSubmit} className={'iP:text-neutral-800 flex justify-start items-center space-x-[.25vw] iP:space-x-[.5vh] bg-neutral-300 px-[.5vw] iP:px-[1vh] py-[.5vh] rounded-[.25vw] iP:rounded-[1vh] shadow-inner hover:bg-neutral-400 transition-colors duration-200 ease-in-out drop-shadow-md'}><IoMdAddCircle /><p>Ajouter</p></button>
+                                <button type={'button'} onClick={handleNewWorkspaceSubmit} className={'iP:text-neutral-800 flex justify-start items-center space-x-[.25vw] iP:space-x-[.5vh] bg-neutral-300 px-[.5vw] iP:px-[1vh] py-[.5vh] rounded-[.25vw] iP:rounded-[1vh] shadow-inner hover:bg-neutral-400 transition-colors duration-200 ease-in-out'}><IoMdAddCircle /><p>Ajouter</p></button>
 
                             </div>
                             {interimWorkers.length > 0 && (
@@ -334,7 +355,7 @@ const Page = () => {
                                                             }, 4600)
                                                         });
 
-                                                        if (!isInterim) {
+                                                        if (isInterim) {
                                                             const updatedWorkers = workers.filter((worker:SNEFWorker) => worker._id !== selectedInterimWorker._id);
                                                             setWorkers(updatedWorkers);
                                                             setSelectedInterimWorker(updatedWorkers[0]);
@@ -356,8 +377,8 @@ const Page = () => {
                                 </div>
                             ) : (
                                 <div className={'flex flex-col justify-center items-center'}>
-                                    <BsArrowUpShort className={`absolute text-[3vw] text-snef left-[5.25vw] iP:left-[17vh] top-[3vw] iP:top-[9vh] iP:text-[8vh] animate-bounce transition-opacity duration-200 ease-in-out -z-20 ${selectUserDialog ? 'opacity-0' : 'opacity-100'}`} />
-                                    <h1 className={'text-[1.5vw] iP:text-[2vh]'}>Veuillez choisir un intérimaire dans le menu.</h1>
+                                    <BsArrowUpShort className={`absolute text-[3vw] text-snef left-[5.25vw] iP:left-[17.25vh] top-[3vw] iP:top-[9vh] iP:text-[8vh] animate-bounce transition-opacity duration-200 ease-in-out -z-20 ${selectUserDialog ? 'opacity-0' : 'opacity-100'}`} />
+                                    <h1 className={'text-[1.5vw] iP:text-[2vh]'}>Veuillez choisir un employé dans le menu.</h1>
                                 </div>
                             )}
                         </>)}

@@ -1,37 +1,17 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { IoIosArrowUp, IoIosArrowDown, IoMdAddCircle } from "react-icons/io";
+import { LuClipboardEdit } from "react-icons/lu";
 import Cookies from "js-cookie";
 import axios from "axios";
-import WorkersList, { SNEFWorker } from "@/app/form/WorkersList";
-import Nav from "@/app/form/Nav";
+import Menu from "../Menu";
 import { PiWarningBold } from "react-icons/pi";
-import { TiTick } from "react-icons/ti";
-import Menu from "@/app/form/Menu";
 import { CgClose } from "react-icons/cg";
-import { IoIosArrowDown, IoIosArrowUp, IoMdAddCircle } from "react-icons/io";
-import { LuClipboardEdit } from "react-icons/lu";
+import WorkersList, { SNEFWorker } from "../WorkersList";
+import { TiTick } from "react-icons/ti";
 import { BsArrowUpShort } from "react-icons/bs";
-
-// - Dating -
-let weekAgoDate: any = new Date();
-weekAgoDate.setDate(weekAgoDate.getDate() - 7);
-
-weekAgoDate = `${weekAgoDate.getDate()} / ${
-  weekAgoDate.getMonth() + 1
-} / ${weekAgoDate.getFullYear()}` as string;
-const currentDate: string = `${new Date().getDate()} / ${
-  new Date().getMonth() + 1
-} / ${new Date().getFullYear()}`;
-
-type Date = {
-  current: string;
-  weekAgo: string;
-};
-const date: Date = {
-  current: currentDate,
-  weekAgo: weekAgoDate,
-};
+import Nav from "../Nav";
 
 export interface Data {
   name: string;
@@ -39,146 +19,150 @@ export interface Data {
   days: number[];
 }
 
-// - Data Treatment -
-type visibleWorkspace = {
-  [key: string]: boolean;
-};
-
-const mergeSchedules = (initSchedule: any, userSchedule: any) => {
-  userSchedule = new Map(userSchedule.map((item: any) => [item.name, item]));
-
-  return initSchedule.map(
-    (workspace: any) => userSchedule.get(workspace.name) || workspace
-  );
-};
-
 const Page = () => {
-  // - Values declaration -
-  const [loading, setLoading] = useState<boolean>(true),
-    [data, setData] = useState<{ name: string; schedule: Data[] }>({
-      name: "",
-      schedule: [],
-    }),
-    [isAdmin, setAdmin] = useState<boolean>(true),
-    [menu, setMenu] = useState(false),
-    [groupWorkers, setGroupWorkers] = useState<any[]>([]),
-    [isInterim, setInterim] = useState<boolean>(false),
-    [alertBox, setAlertBox] = useState<boolean>(false),
-    [confirmationBox, setConfirmationBox] = useState<boolean>(false),
-    [eSignature, setESignature] = useState<boolean>(false),
-    [visibleWorkspace, setWorkspace] = useState(() => {
-      const initVisibility: visibleWorkspace = {};
-      data.schedule.forEach((workspace) => {
-        initVisibility[workspace.name] = true;
-      });
-      return initVisibility;
-    }),
-    [newWorkspaceName, setWorkspaceName] = useState<string>(""),
-    [newWorkspaceCode, setWorkspaceCode] = useState<string>(""),
-    [addWorkspaceDialog, setWorkspaceDialog] = useState<boolean>(false),
-    [selWorkerDialog, setSelWorkerDialog] = useState<boolean>(false),
-    [selGroupWorker, setGroupWorker] = useState<string>(""),
-    [workerType, setType] = useState<string>("");
+  const [selectedInterimWorker, setSelectedInterimWorker] =
+    useState<SNEFWorker | null>(null);
+  const [selectedWorkerSchedule, setSelectedWorkerSchedule] = useState<any[]>(
+    []
+  );
+  const [data, setData] = useState<{ name: string; schedule: Data[] }>({
+    name: "",
+    schedule: [],
+  });
 
-  // - Initial Data Fetching -
+  const [loading, setLoading] = useState(true);
+  const [allWorkspaces, setAllWorkspaces] = useState([]);
+  const currentDate: string =
+    new Date().getDate() +
+    "/" +
+    (new Date().getMonth() + 1) +
+    "/" +
+    new Date().getFullYear();
+  const dateAWeekAgo = new Date();
+  dateAWeekAgo.setDate(dateAWeekAgo.getDate() - 7);
+  const weekAgo: string =
+    dateAWeekAgo.getDate() +
+    "/" +
+    (dateAWeekAgo.getMonth() + 1) +
+    "/" +
+    dateAWeekAgo.getFullYear();
+
+  const [menu, setMenu] = useState(false);
+
+  function mergeSchedules(initSchedule: any, userSchedule: any) {
+    console.log(initSchedule, userSchedule);
+    const userScheduleMap = new Map(
+      userSchedule.map((item: any) => [item.name, item])
+    );
+
+    // If workspace already exists in user schedule, use that, otherwise use initial workspace
+    return initSchedule.map(
+      (workspace: any) => userScheduleMap.get(workspace.name) || workspace
+    );
+  }
+
+  const [interimWorkers, setInterimWorkers] = useState([]);
+
   useEffect(() => {
-    const name: string = Cookies.get("name") as string;
-    switch (name.toLowerCase()) {
-      case "undefined" || "null":
-        window.location.href = "/";
-        break;
-      case "interim":
-        setType("intérimaire");
-        console.log(workerType);
-        axios
-          .get("https://api.snef.cloud/workers/?interim=true")
-          .then((res) => {
-            setGroupWorkers(res.data);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-        setLoading(false);
-        break;
-      case "snef":
-        setType("employé");
-        console.log(workerType);
-        axios
-          .get("https://api.snef.cloud/workers/?interim=false")
-          .then((res) => {
-            setGroupWorkers(res.data);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-        setLoading(false);
-        break;
-      default:
-        axios
-          .get(`https://api.snef.cloud/worker/?name=${name}`)
-          .then((userRes) => {
-            setInterim(userRes.data.interim);
-
-            axios
-              .get("https://api.snef.cloud/getWorkspaces")
-              .then((dbRes) => {
-                const mergedSchedules = mergeSchedules(
-                  dbRes.data,
-                  userRes.data.schedule || []
-                );
-                setData({
-                  name: name,
-                  schedule: mergedSchedules,
-                });
-                setGroupWorker(name);
-                setLoading(false);
-              })
-              .catch((err) => {
-                console.log(err);
-              });
-          });
+    const name = Cookies.get("name");
+    if (name == undefined) {
+      window.location.href = "/";
+      return;
+    } else if (name.toLowerCase() == "interim") {
+      axios
+        .get("https://api.snef.cloud/workers/?interim=true")
+        .then((res) => {
+          setInterimWorkers(res.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
+    axios
+      .get(`https://api.snef.cloud/worker/?name=${name}`)
+      .then((res) => {
+        console.log(res.data);
+        setInterim(res.data.interim || false);
+        axios.get("https://api.snef.cloud/getWorkspaces").then((response) => {
+          const mergedSchedules = mergeSchedules(
+            response.data,
+            res.data.schedule || []
+          );
+          setData({
+            name: name,
+            schedule: mergedSchedules,
+          });
+        });
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }, []);
 
-  const fetchSchedule = (worker: string) => {
-    console.log(worker);
-    if (worker.length > 0) {
-      console.log(worker);
-      axios
-        .get(`https://api.snef.cloud/worker/?name=${worker}`)
-        .then((userRes) => {
-          setInterim(userRes.data.interim);
-          axios
-            .get("https://api.snef.cloud/getWorkspaces")
-            .then((dbRes) => {
-              const mergedSchedules = mergeSchedules(
-                dbRes.data,
-                userRes.data.schedule || []
-              );
-              setData({
-                name: worker,
-                schedule: mergedSchedules,
-              });
-            })
-            .catch((err) => {
-              console.log(err);
-            });
-        });
-    } else console.log("No worker selected");
-  };
-
-  // - Handling Workspaces List Updates -
   useEffect(() => {
-    const updatedVisibility: visibleWorkspace = {};
-    data.schedule.forEach((workspace) => {
-      updatedVisibility[workspace.name] =
-        visibleWorkspace[workspace.name] ?? true;
-    });
-    setWorkspace(updatedVisibility);
-  }, [data.schedule, visibleWorkspace]);
+    if (selectedInterimWorker !== null && selectedInterimWorker !== undefined) {
+      setInterim(selectedInterimWorker.interim);
+      axios
+        .get(
+          `https://api.snef.cloud/worker/?name=${selectedInterimWorker.name}`
+        )
+        .then((res) => {
+          let workerData = res.data;
+          axios.get("https://api.snef.cloud/getWorkspaces").then((response) => {
+            const allWorkspaces = response.data;
+            allWorkspaces.forEach((workspace: any) => {
+              if (
+                !workerData.schedule.find(
+                  (scheduleItem: any) => scheduleItem.name === workspace.name
+                )
+              ) {
+                workerData.schedule.push(workspace);
+              }
+            });
+          });
+          setData(workerData);
+          setSelectedWorkerSchedule(workerData.schedule);
+          setSignature(false);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [selectedInterimWorker]);
 
-  const handleNewWorkspace = async (e: React.FormEvent) => {
+  const [alertBox, setAlertBox] = useState(false);
+  const [signature, setSignature] = useState(false);
+
+  interface WorkspaceVisibility {
+    [key: string]: boolean;
+  }
+
+  const [workspaceVisibility, setWorkspaceVisibility] = useState(
+    allWorkspaces.reduce(
+      (visibilities: { [key: string]: boolean }, workspace: any) => {
+        visibilities[workspace._id] = true;
+        return visibilities;
+      },
+      {}
+    )
+  );
+
+  useEffect(() => {
+    const newVisibility: WorkspaceVisibility = {};
+    data.schedule.forEach((workspace) => {
+      newVisibility[workspace.name] =
+        workspaceVisibility[workspace.name] ?? true;
+    });
+    setWorkspaceVisibility(newVisibility);
+  }, [data.schedule]);
+
+  const [newWorkspaceName, setNewWorkspaceName] = useState("");
+  const [newWorkspaceCode, setNewWorkspaceCode] = useState("");
+
+  async function handleNewWorkspaceSubmit(e: React.FormEvent) {
     e.preventDefault();
+
     const newWorkspace: Data = {
       name: newWorkspaceName,
       codeNumber: newWorkspaceCode,
@@ -186,20 +170,41 @@ const Page = () => {
     };
 
     try {
-      const res = await axios.post(
+      const response = await axios.post(
         "https://api.snef.cloud/addWorkspace",
         newWorkspace
       );
+      console.log(response.data);
+
       setData({
         ...data,
         schedule: [...data.schedule, newWorkspace],
       });
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      console.error(error);
     }
-    setWorkspaceName("");
-    setWorkspaceCode("");
-  };
+
+    setNewWorkspaceName("");
+    setNewWorkspaceCode("");
+  }
+
+  const [addWorkspaceDialog, setAddWorkspaceDialog] = useState(false);
+  const [isInterim, setInterim] = useState(false);
+  const [selectUserDialog, setSelectUserDialog] = useState(false);
+  const [workers, setWorkers] = useState<SNEFWorker[]>([]);
+  const [confirmationBox, setConfirmationBox] = useState(false);
+  const [isAdmin, setAdmin] = useState(true);
+
+  useEffect(() => {
+    axios
+      .get("https://api.snef.cloud/getWorkspaces")
+      .then((res) => {
+        setAllWorkspaces(res.data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, []);
 
   return (
     <main className="w-1/2 iP:w-11/12 h-[95vh] m-auto flex flex-col justify-center items-center not-italic space-y-[3vh] select-none">
@@ -214,12 +219,9 @@ const Page = () => {
             adminState={isAdmin}
             setMenu={setMenu}
             addWorkspaceDialog={addWorkspaceDialog}
-            setAddWorkspaceDialog={setWorkspaceDialog}
-            selectUserDialog={selWorkerDialog}
-            setSelectUserDialog={setSelWorkerDialog}
-            groupWorkers={groupWorkers}
-            selGroupWorker={selGroupWorker}
-            selWorkerDialog={selWorkerDialog}
+            setAddWorkspaceDialog={setAddWorkspaceDialog}
+            selectUserDialog={selectUserDialog}
+            setSelectUserDialog={setSelectUserDialog}
           />
 
           <div
@@ -258,8 +260,8 @@ const Page = () => {
             menu={menu}
             setMenu={setMenu}
             data={data.schedule}
-            workspaceVisibility={visibleWorkspace}
-            setWorkspaceVisibility={setWorkspace}
+            workspaceVisibility={workspaceVisibility}
+            setWorkspaceVisibility={setWorkspaceVisibility}
           />
 
           <div
@@ -272,7 +274,7 @@ const Page = () => {
             <button
               type={"button"}
               onClick={() => {
-                setWorkspaceDialog(!addWorkspaceDialog);
+                setAddWorkspaceDialog(!addWorkspaceDialog);
               }}
               className={
                 "hidden iP:block absolute right-[3vw] top-[3vw] text-[3vh] px-[1vw] py-[1vw] text-center hover:text-neutral-300 hover:bg-neutral-900 hover:bg-opacity-50 rounded-full transition-all duration-200 ease-in-out"
@@ -286,7 +288,7 @@ const Page = () => {
               <input
                 type={"text"}
                 value={newWorkspaceName}
-                onChange={(e) => setWorkspaceName(e.target.value)}
+                onChange={(e) => setNewWorkspaceName(e.target.value)}
                 className={
                   "iP:text-neutral-800 border-[.1vw] iP:border-[.25vh] border-neutral-300 outline-none rounded-[.25vw] iP:rounded-[1vh] px-[.25vw] iP:px-[.5vh] py-[.25vh] bg-neutral-50 hover:bg-neutral-300 focus:bg-neutral-300 transition-colors duration-200 ease-in-out shadow-inner"
                 }
@@ -298,7 +300,7 @@ const Page = () => {
               <input
                 type={"text"}
                 value={newWorkspaceCode}
-                onChange={(e) => setWorkspaceCode(e.target.value)}
+                onChange={(e) => setNewWorkspaceCode(e.target.value)}
                 className={
                   "iP:text-neutral-800 border-[.1vw] iP:border-[.25vh] border-neutral-300 outline-none rounded-[.25vw] iP:rounded-[1vh] px-[.25vw] iP:px-[.5vh] py-[.25vh] bg-neutral-50 hover:bg-neutral-300 focus:bg-neutral-300 transition-colors duration-200 ease-in-out shadow-inner"
                 }
@@ -307,7 +309,7 @@ const Page = () => {
 
             <button
               type={"button"}
-              onClick={handleNewWorkspace}
+              onClick={handleNewWorkspaceSubmit}
               className={
                 "iP:text-neutral-800 flex justify-start items-center space-x-[.25vw] iP:space-x-[.5vh] bg-neutral-300 px-[.5vw] iP:px-[1vh] py-[.5vh] rounded-[.25vw] iP:rounded-[1vh] shadow-inner hover:bg-neutral-400 transition-colors duration-200 ease-in-out drop-shadow-md"
               }
@@ -316,17 +318,17 @@ const Page = () => {
               <p>Ajouter</p>
             </button>
           </div>
-          {groupWorkers.length > 0 && (
+          {interimWorkers.length > 0 && (
             <div
               className={`absolute bg-neutral-100 iP:bg-snef iP:backdrop-blur-xl px-[1vw] py-[1vh] rounded-[0.5vw] drop-shadow-lg iP:drop-shadow-none top-[3vh] iP:top-[-3vh] transition duration-200 ease-in-out left-0 flex flex-col justify-start items-start iP:w-[90vw] iP:h-screen iP:z-10 iP:rounded-r-[2vh] iP:justify-center iP:items-baseline iP:space-y-[2vh] iP:pl-[25%] iP:text-[2vh] iP:text-neutral-100 iP:border-y-[0.25vh] iP:border-r-[0.25vh] iP:border-teal-700 iP:border-opacity-25 space-y-[1vh] ${
-                selWorkerDialog
+                selectUserDialog
                   ? "translate-x-[2vw]  iP:translate-x-0"
                   : "translate-x-[-15vw] iP:translate-x-[-100vw]"
               }`}
             >
               <button
                 type={"button"}
-                onClick={() => setSelWorkerDialog(!selWorkerDialog)}
+                onClick={() => setSelectUserDialog(!selectUserDialog)}
                 className={
                   "hidden iP:block absolute right-[3vw] top-[3vw] text-[3vh] px-[1vw] py-[1vw] text-center hover:text-neutral-300 hover:bg-neutral-900 hover:bg-opacity-50 rounded-full transition-all duration-200 ease-in-out"
                 }
@@ -334,14 +336,12 @@ const Page = () => {
                 <CgClose />
               </button>
               <WorkersList
-                workers={groupWorkers}
-                setGroupWorker={setGroupWorker}
-                setData={setData}
-                setInterim={setInterim}
+                workers={interimWorkers}
+                setSelectedWorker={setSelectedInterimWorker}
               />
             </div>
           )}
-          {selGroupWorker && (
+          {selectedInterimWorker && (
             <>
               <div
                 className={
@@ -349,14 +349,14 @@ const Page = () => {
                 }
               >
                 <h1 className={"text-[1.5vw] iP:text-[2vh] text-neutral-800"}>
-                  Formulaire de pointage de {selGroupWorker}
+                  Formulaire de pointage de {selectedInterimWorker.name}
                 </h1>
                 <h3
                   className={
                     "border-2 border-neutral-300 px-[0.25vw] py-[0.25vh] rounded-[0.5vw] text-[0.6vw] iP:text-[1.5vh] iP:rounded-[1vh] iP:px-[1vw]"
                   }
                 >
-                  {date.weekAgo} – {date.current}
+                  {weekAgo} – {currentDate}
                 </h3>
               </div>
 
@@ -366,19 +366,19 @@ const Page = () => {
                 }
               >
                 <WeekCol />
-                {data.schedule.map((item, index) => {
+                {selectedWorkerSchedule.map((item, index) => {
                   const setHours = (day: Data) => {
-                    let newData = [...data.schedule];
+                    let newData = [...selectedWorkerSchedule];
                     newData[index] = day;
-                    data.schedule = newData;
+                    setSelectedWorkerSchedule(newData);
                   };
                   return (
                     <Line
                       key={index}
                       data={item}
                       setData={setHours}
-                      workspaceVisibility={visibleWorkspace}
-                      setWorkspaceVisibility={setWorkspace}
+                      workspaceVisibility={workspaceVisibility}
+                      setWorkspaceVisibility={setWorkspaceVisibility}
                     />
                   );
                 })}
@@ -386,7 +386,7 @@ const Page = () => {
             </>
           )}
 
-          {selGroupWorker ? (
+          {selectedInterimWorker ? (
             <div
               className={
                 "w-full flex px-[2vw] justify-between items-center text-[0.6vw] iP:text-[1.5vh]"
@@ -404,10 +404,10 @@ const Page = () => {
                 >
                   <input
                     type={"checkbox"}
-                    checked={eSignature}
+                    checked={signature}
                     className={"cursor-pointer"}
                     onClick={() => {
-                      setESignature(!eSignature);
+                      setSignature(!signature);
                     }}
                   />
                   <p>
@@ -458,19 +458,19 @@ const Page = () => {
               <button
                 type={"button"}
                 onClick={async () => {
-                  if (!eSignature) {
+                  if (!signature) {
                     setAlertBox(true);
                     setTimeout(() => {
                       setAlertBox(false);
                     }, 4600);
                   } else {
                     console.log(data);
-                    if (selGroupWorker !== null) {
+                    if (selectedInterimWorker !== null) {
                       try {
                         const response = await axios
                           .post("https://api.snef.cloud/schedule", {
-                            name: data.name,
-                            schedule: data.schedule,
+                            name: selectedInterimWorker.name,
+                            schedule: selectedWorkerSchedule,
                             interim: isInterim,
                           })
                           .then(() => {
@@ -480,34 +480,13 @@ const Page = () => {
                             }, 4600);
                           });
 
-                        if (Cookies.get("name")) {
-                          const name = Cookies.get("name") as string;
-                          switch (name) {
-                            case "snef":
-                              if (isInterim) {
-                                const updatedWorkers = groupWorkers.filter(
-                                  (worker: SNEFWorker) =>
-                                    worker.name !== data.name
-                                ) as any;
-                                setGroupWorkers(updatedWorkers);
-                                setGroupWorker(updatedWorkers[0].name);
-                                fetchSchedule(updatedWorkers[0].name);
-                              }
-                              break;
-                            case "interim":
-                              if (!isInterim) {
-                                const updatedWorkers = groupWorkers.filter(
-                                  (worker: SNEFWorker) =>
-                                    worker.name !== data.name
-                                ) as any;
-                                setGroupWorkers(updatedWorkers);
-                                setGroupWorker(updatedWorkers[0].name);
-                                fetchSchedule(updatedWorkers[0].name);
-                              }
-                              break;
-                            default:
-                              window.location.replace("https://snef.cloud");
-                          }
+                        if (!isInterim) {
+                          const updatedWorkers = workers.filter(
+                            (worker: SNEFWorker) =>
+                              worker._id !== selectedInterimWorker._id
+                          );
+                          setWorkers(updatedWorkers);
+                          setSelectedInterimWorker(updatedWorkers[0]);
                         }
                       } catch (err) {
                         console.log(err);
@@ -525,8 +504,13 @@ const Page = () => {
             </div>
           ) : (
             <div className={"flex flex-col justify-center items-center"}>
+              <BsArrowUpShort
+                className={`absolute text-[4vw] text-snef right-[46.8vw] iP:left-[17vh] top-[6vw] iP:top-[9vh] iP:text-[8vh] animate-bounce transition-opacity duration-200 ease-in-out -z-20 ${
+                  selectUserDialog ? "opacity-0" : "opacity-100"
+                }`}
+              />
               <h1 className={"text-[1.5vw] iP:text-[2vh]"}>
-                Veuillez choisir un {workerType} dans le menu.
+                Veuillez choisir un intérimaire dans le menu.
               </h1>
             </div>
           )}
@@ -583,7 +567,7 @@ const Line = ({
           {data.name}
         </div>
 
-        {data.days.map((item: any, index: any) => {
+        {data.days.map((item, index) => {
           const setHours = (hours: number) => {
             let newDays = [...data.days];
             newDays[index] = hours;
@@ -646,4 +630,3 @@ const Section = ({ item, setData }: { item: number; setData: any }) => {
 };
 
 export default Page;
-export { mergeSchedules };
