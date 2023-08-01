@@ -1,5 +1,5 @@
 import React from 'react';
-import {mergeSchedules} from "@/app/form/GroupInput/page";
+import {mergeSchedules} from "./page";
 import axios from "axios";
 
 export interface SNEFWorker {
@@ -30,15 +30,14 @@ const WorkersList:any = ({workers, setGroupWorker, setData, setInterim}:any) => 
         console.log(worker)
         if (worker.length > 0) {
             console.log(worker)
-            axios.get(`https://api.snef.cloud/worker/?name=${worker}`).then((res) => {
-                    setInterim(res.data.interim);
-                    axios.get('https://api.snef.cloud/getWorkspaces').then((res) => {
-                        const mergedSchedules = mergeSchedules(res.data, res.data.schedule || []);
+            axios.get(`https://api.snef.cloud/worker/?name=${worker}`).then((userRes) => {
+                    setInterim(userRes.data.interim);
+                    axios.get('https://api.snef.cloud/getWorkspaces').then((dbRes) => {
+                        const mergedSchedules = mergeSchedules(dbRes.data, userRes.data.schedule || []);
                         setData({
                             name: worker,
                             schedule: mergedSchedules,
                         })
-                        console.log('MERGED SCHEDULES ===>', mergedSchedules)
                     }).catch((err) => {
                         console.log(err);
                     })

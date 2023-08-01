@@ -1,6 +1,7 @@
 import React from "react";
 import '../global.css';
 import {ListWorkspace, AddWorkspace, UserList, BackToLandingPage} from "./Buttons";
+import {BsArrowUpShort} from "react-icons/bs";
 
 type navProps = {
     adminState: boolean,
@@ -10,6 +11,9 @@ type navProps = {
     setAddWorkspaceDialog: React.Dispatch<React.SetStateAction<boolean>>,
     selectUserDialog: boolean,
     setSelectUserDialog: React.Dispatch<React.SetStateAction<boolean>>,
+    groupWorkers: any,
+    selGroupWorker: any,
+    selWorkerDialog: boolean
 }
 
 export type shippingProps = {
@@ -22,7 +26,7 @@ const Divider = () => {
     )
 }
 
-const Nav:React.FC<navProps> = ({adminState, menu, setMenu, addWorkspaceDialog, setAddWorkspaceDialog, selectUserDialog, setSelectUserDialog}) => {
+const Nav:React.FC<navProps> = ({adminState, menu, setMenu, addWorkspaceDialog, setAddWorkspaceDialog, selectUserDialog, setSelectUserDialog, groupWorkers, selGroupWorker, selWorkerDialog}) => {
 
     const shippingProps:navProps = {
         menu,
@@ -31,7 +35,10 @@ const Nav:React.FC<navProps> = ({adminState, menu, setMenu, addWorkspaceDialog, 
         setAddWorkspaceDialog,
         selectUserDialog,
         setSelectUserDialog,
-        adminState
+        adminState,
+        groupWorkers,
+        selGroupWorker,
+        selWorkerDialog
     }
 
     return (
@@ -41,13 +48,25 @@ const Nav:React.FC<navProps> = ({adminState, menu, setMenu, addWorkspaceDialog, 
             {adminState && (
                 <>
                     <AddWorkspace shippingProps={shippingProps} />
-                    <UserList shippingProps={shippingProps} />
+                    {groupWorkers.length > 0 && (
+                        <>
+                            <UserList shippingProps={shippingProps} />
+                        </>
+                    )}
                 </>
             )}
 
             <Divider />
 
             <BackToLandingPage />
+
+            {!selGroupWorker && (
+                <BsArrowUpShort
+                    className={`absolute text-[4vw] text-snef iP:text-[8vh] iP:translate-x-[0.5vw] iP:translate-y-[6vh] translate-y-[5vh] translate-x-[0.75vw] animate-pulse transition-opacity duration-200 ease-in-out -z-20 ${
+                        selWorkerDialog ? "opacity-0" : "opacity-100"
+                    }`}
+                />
+            )}
 
         </div>
     )

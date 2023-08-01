@@ -21,13 +21,7 @@ const Page = () => {
             }, 4600);
         } else {
             Cookies.set("name", name);
-            if (name.toLowerCase() === 'interim') {
-                router.push("form/GroupInput");
-            } else if (name.toLowerCase() === 'snef') {
-                router.push("form/GroupInput");
-            } else {
-                router.push("/form/GroupInput");
-            }
+            router.push("/form");
         }
     }
 
