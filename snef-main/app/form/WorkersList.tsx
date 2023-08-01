@@ -1,5 +1,5 @@
 import React from 'react';
-import {mergeSchedules} from "./page";
+import mergeSchedules from "./mergeSchedules";
 import axios from "axios";
 
 export interface SNEFWorker {

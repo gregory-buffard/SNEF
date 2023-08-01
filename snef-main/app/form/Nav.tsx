@@ -4,7 +4,7 @@ import {ListWorkspace, AddWorkspace, UserList, BackToLandingPage} from "./Button
 import {BsArrowUpShort} from "react-icons/bs";
 
 type navProps = {
-    adminState: boolean,
+    adminState: any,
     menu: boolean,
     setMenu: React.Dispatch<React.SetStateAction<boolean>>,
     addWorkspaceDialog: boolean,

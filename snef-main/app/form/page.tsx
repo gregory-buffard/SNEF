@@ -11,7 +11,8 @@ import Menu from "@/app/form/Menu";
 import { CgClose } from "react-icons/cg";
 import { IoIosArrowDown, IoIosArrowUp, IoMdAddCircle } from "react-icons/io";
 import { LuClipboardEdit } from "react-icons/lu";
-import { BsArrowUpShort } from "react-icons/bs";
+import {useUser} from '@clerk/nextjs';
+import mergeSchedules from "./mergeSchedules";
 
 // - Dating -
 let weekAgoDate: any = new Date();
@@ -44,22 +45,15 @@ type visibleWorkspace = {
   [key: string]: boolean;
 };
 
-const mergeSchedules = (initSchedule: any, userSchedule: any) => {
-  userSchedule = new Map(userSchedule.map((item: any) => [item.name, item]));
-
-  return initSchedule.map(
-    (workspace: any) => userSchedule.get(workspace.name) || workspace
-  );
-};
-
 const Page = () => {
   // - Values declaration -
   const [loading, setLoading] = useState<boolean>(true),
+      {user} = useUser(),
     [data, setData] = useState<{ name: string; schedule: Data[] }>({
       name: "",
       schedule: [],
     }),
-    [isAdmin, setAdmin] = useState<boolean>(true),
+    isAdmin = user?.publicMetadata.admin || true as boolean,
     [menu, setMenu] = useState(false),
     [groupWorkers, setGroupWorkers] = useState<any[]>([]),
     [isInterim, setInterim] = useState<boolean>(false),
@@ -646,4 +640,3 @@ const Section = ({ item, setData }: { item: number; setData: any }) => {
 };
 
 export default Page;
-export { mergeSchedules };
