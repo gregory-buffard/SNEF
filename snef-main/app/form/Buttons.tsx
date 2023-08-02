@@ -85,9 +85,9 @@ export const UserList:FC<shippingProps> = ({shippingProps}) => {
 export const BackToLandingPage = () => {
     return (
         <div className={'navApp'}>
-            <Link href={"https://www.snef.cloud"} className={"navButton shadow-inner peer"}>
+            <a href={"https://www.snef.cloud"} className={"navButton shadow-inner peer"}>
                 <IoIosArrowBack />
-            </Link>
+            </a>
             <p className={'contextTag iP:hidden peer-hover:opacity-100 text-tag'}>Page d&apos;acceuil</p>
         </div>
     )

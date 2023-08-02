@@ -33,17 +33,13 @@ const Page = () => {
     }
 
     useEffect(() => {
-        if (isAdmin) {
-            if (Cookies.get("name")) {
-                setName(Cookies.get("name") as string);
-            }
-        } else {
-            if (user?.firstName !== undefined && user?.lastName !== undefined) {
+        if (Cookies.get("name") !== undefined) {
+            setName(Cookies.get("name") as string);
+        }else if (user?.firstName !== undefined && user?.lastName !== undefined) {
                 const userName = user?.firstName + ' ' + user?.lastName as string;
                 setName(userName);
             }
-        }
-    },[isAdmin, name, user?.firstName, user?.lastName])
+    },[user?.firstName, user?.lastName])
 
     const [alertBox, setAlertBox] = useState(false),
     [darkenBackground, setDarkenBackground] = useState(false),
