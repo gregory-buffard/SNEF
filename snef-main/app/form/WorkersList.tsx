@@ -50,8 +50,8 @@ const WorkersList:any = ({workers, setGroupWorker, setData, setInterim}:any) => 
         <>
             {workers.length > 0 ? workers.map((worker:any, index:any) => {
                 return (
-                    <div key={worker._id} className={'w-full flex justify-between items-center space-x-[1vw]'}>
-                        <div className={'flex justify-start items-center space-x-[1vw]'}>
+                    <div key={worker._id} className={'w-full flex justify-between items-center space-x-[1vw] bg-neutral-200 rounded-[0.5vw] px-[0.75vw] py-[0.5vh] my-[0.5vh] accent-snef iP:space-x-[2vh] iP:bg-transparent iP:w-10/12'}>
+                        <div className={'flex justify-start items-center space-x-[1vw] iP:space-x-[2vh]'}>
                             <input
                                 type="radio"
                                 id={`worker-${index}`}
@@ -61,10 +61,11 @@ const WorkersList:any = ({workers, setGroupWorker, setData, setInterim}:any) => 
                                     setGroupWorker(worker.name);
                                     await fetchSchedule(worker.name);
                                 }}
+                                className={'cursor-pointer iP:w-[2vh] iP:h-[2vh]'}
                             />
                             <p>{worker.name}</p>
                         </div>
-                        <div className={`w-[0.5vw] h-[0.5vw] rounded-full ${worker.week === getWeekNumber(new Date()) ? 'bg-green-400' : 'bg-red-400'}`}></div>
+                        <div className={`w-[0.5vw] h-[0.5vw] iP:w-[1vh] iP:h-[1vh] rounded-full ${worker.week === getWeekNumber(new Date()) ? 'bg-green-400' : 'bg-red-400'}`}></div>
                     </div>
                     )
             }) : <></>}

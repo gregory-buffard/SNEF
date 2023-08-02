@@ -13,6 +13,7 @@ import { IoIosArrowDown, IoIosArrowUp, IoMdAddCircle } from "react-icons/io";
 import { LuClipboardEdit } from "react-icons/lu";
 import {useUser} from '@clerk/nextjs';
 import mergeSchedules from "./mergeSchedules";
+import {AiOutlineLoading} from "react-icons/ai";
 
 // - Dating -
 let weekAgoDate: any = new Date();
@@ -53,7 +54,7 @@ const Page = () => {
       name: "",
       schedule: [],
     }),
-    isAdmin = user?.publicMetadata.admin || true as boolean,
+    isAdmin = user?.publicMetadata.admin || false as boolean,
     [menu, setMenu] = useState(false),
     [groupWorkers, setGroupWorkers] = useState<any[]>([]),
     [isInterim, setInterim] = useState<boolean>(false),
@@ -196,10 +197,11 @@ const Page = () => {
   };
 
   return (
-    <main className="w-1/2 iP:w-11/12 h-[95vh] m-auto flex flex-col justify-center items-center not-italic space-y-[3vh] select-none">
+    <main className="w-1/2 iP:w-11/12 h-[90vh] m-auto flex flex-col justify-center items-center not-italic space-y-[3vh] select-none">
       {loading ? (
-        <div className={"w-screen h-screen flex justify-center items-center"}>
-          <p>Chargement...</p>
+        <div className={"w-screen h-screen flex flex-col justify-center items-center space-y-[2vh]"}>
+          <h1 className={'text-[1.5vw] iP:text-[2vh]'}>Chargement...</h1>
+          <AiOutlineLoading className={'text-[2vw] iP:text-[2vh] text-snef animate-spin'} />
         </div>
       ) : (
         <>
@@ -257,10 +259,10 @@ const Page = () => {
           />
 
           <div
-            className={`absolute bg-neutral-100 iP:bg-snef iP:backdrop-blur-xl px-[1vw] py-[1vh] rounded-[0.5vw] drop-shadow-lg iP:drop-shadow-none top-[3vh] iP:top-[-3vh] transition duration-200 ease-in-out left-0 flex flex-col justify-start items-start iP:w-[90vw] iP:h-screen iP:z-10 iP:rounded-r-[2vh] iP:justify-center iP:items-baseline iP:space-y-[2vh] iP:pl-[25%] iP:text-[2vh] iP:text-neutral-100 iP:border-y-[0.25vh] iP:border-r-[0.25vh] iP:border-teal-700 iP:border-opacity-25 space-y-[1vh] ${
+            className={`z-10 absolute scrollbarStyle bg-neutral-100 iP:bg-snef iP:backdrop-blur-xl px-[1vw] py-[1vh] rounded-b-[0.75vw] iP:drop-shadow-none transition duration-200 ease-in-out flex flex-col justify-start items-center iP:w-[90vw] iP:h-screen iP:z-10 iP:rounded-r-[2vh] iP:justify-center iP:items-baseline iP:space-y-[2vh] iP:pl-[25%] iP:text-[2vh] iP:text-neutral-100 iP:border-y-[0.25vh] iP:border-r-[0.25vh] iP:border-teal-700 iP:border-opacity-25 overflow-y-scroll left-[2vw] drop-shadow-2xl top-[-3vh] iP:left-[-3vh] space-y-[2vh] ${
               addWorkspaceDialog
-                ? "translate-x-[2vw]  iP:translate-x-0"
-                : "translate-x-[-15vw] iP:translate-x-[-100vw]"
+                ? "translate-y-[0] iP:translate-x-0"
+                : "translate-y-[-100vh] iP:translate-y-0 iP:translate-x-[-100vw]"
             }`}
           >
             <button
@@ -312,10 +314,10 @@ const Page = () => {
           </div>
           {groupWorkers.length > 0 && (
             <div
-              className={`absolute bg-neutral-100 iP:bg-snef iP:backdrop-blur-xl px-[1vw] py-[1vh] rounded-[0.5vw] drop-shadow-lg iP:drop-shadow-none top-[3vh] iP:top-[-3vh] transition duration-200 ease-in-out left-0 flex flex-col justify-start items-start iP:w-[90vw] iP:h-screen iP:z-10 iP:rounded-r-[2vh] iP:justify-center iP:items-baseline iP:space-y-[2vh] iP:pl-[25%] iP:text-[2vh] iP:text-neutral-100 iP:border-y-[0.25vh] iP:border-r-[0.25vh] iP:border-teal-700 iP:border-opacity-25 space-y-[1vh] ${
+              className={`z-10 absolute scrollbarStyle bg-neutral-100 iP:bg-snef iP:backdrop-blur-xl px-[1vw] py-[1vh] rounded-b-[0.75vw] iP:drop-shadow-none transition duration-200 ease-in-out flex flex-col justify-start items-center iP:w-[90vw] iP:h-screen iP:z-10 iP:rounded-r-[2vh] iP:justify-center iP:items-baseline iP:space-y-[2vh] iP:pl-[25%] iP:text-[2vh] iP:text-neutral-100 iP:border-y-[0.25vh] iP:border-r-[0.25vh] iP:border-teal-700 iP:border-opacity-25 overflow-y-scroll left-[2vw] drop-shadow-2xl top-[-3vh] iP:left-[-3vh] ${
                 selWorkerDialog
-                  ? "translate-x-[2vw]  iP:translate-x-0"
-                  : "translate-x-[-15vw] iP:translate-x-[-100vw]"
+                  ? "translate-y-[0] iP:translate-x-0"
+                  : "translate-y-[-100vh] iP:translate-y-0 iP:translate-x-[-100vw]"
               }`}
             >
               <button
@@ -342,7 +344,7 @@ const Page = () => {
                   "flex flex-col justify-center items-center space-y-2"
                 }
               >
-                <h1 className={"text-[1.5vw] iP:text-[2vh] text-neutral-800"}>
+                <h1 className={"text-[1.5vw] iP:text-[2vh] text-neutral-800 iP:mt-[5vh] mt-[5vw]"}>
                   Formulaire de pointage de {selGroupWorker}
                 </h1>
                 <h3
@@ -399,7 +401,7 @@ const Page = () => {
                   <input
                     type={"checkbox"}
                     checked={eSignature}
-                    className={"cursor-pointer"}
+                    className={"cursor-pointer iP:w-[3vh] iP:h-[3vh] accent-snef"}
                     onClick={() => {
                       setESignature(!eSignature);
                     }}
@@ -411,12 +413,12 @@ const Page = () => {
                 </div>
                 <div
                   className={
-                    "flex justify-center items-center space-x-[1vw] iP:space-x-[2vh] iP:w-[60vw]"
+                    "flex justify-center items-center space-x-[1vw] iP:space-x-[2vh] iP:w-[60vw] accent-snef"
                   }
                 >
                   <p>Intérimaire ?</p>
                   <div
-                    className={"flex justify-center items-center space-x-[1vw]"}
+                    className={"flex justify-start items-center space-x-[1vw] iP:space-x-[2vh]"}
                   >
                     <div
                       className={
@@ -428,7 +430,7 @@ const Page = () => {
                         type={"radio"}
                         checked={isInterim}
                         value={"true"}
-                        className={"cursor-pointer"}
+                        className={"cursor-pointer iP:w-[2vh] iP:h-[2vh]"}
                         onChange={() => setInterim(true)}
                       />
                     </div>
@@ -442,7 +444,7 @@ const Page = () => {
                         type={"radio"}
                         checked={!isInterim}
                         value={"false"}
-                        className={"cursor-pointer"}
+                        className={"cursor-pointer iP:w-[2vh] iP:h-[2vh]"}
                         onChange={() => setInterim(false)}
                       />
                     </div>
@@ -476,7 +478,7 @@ const Page = () => {
 
                         if (Cookies.get("name")) {
                           const name = Cookies.get("name") as string;
-                          switch (name) {
+                          switch (name.toLowerCase()) {
                             case "snef":
                               if (isInterim) {
                                 const updatedWorkers = groupWorkers.filter(
@@ -501,6 +503,7 @@ const Page = () => {
                               break;
                             default:
                               window.location.replace("https://snef.cloud");
+                              break;
                           }
                         }
                       } catch (err) {

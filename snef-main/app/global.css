@@ -4,6 +4,21 @@
 
 
 /* - NAVIGATION COMPONENT (Nav.tsx) - */
+/* - HTML  -*/
+.scrollbarStyle::-webkit-scrollbar {
+    height: 2vh;
+}
+
+.scrollbarStyle::-webkit-scrollbar-thumb {
+    background-color: #d4d4d4;
+    border-radius: 1vh;
+}
+
+.scrollbarStyle::-webkit-scrollbar-thumb:hover {
+    background-color: #a3a3a3;
+}
+
+
 /* Navigation button */
 .navApp {
     display: flex;
