@@ -617,7 +617,7 @@ const Section = ({ item, setData }: { item: number; setData: any }) => {
             className={
               "bg-neutral-50 rounded-t-[0.5vw] iP:rounded-t-[1vh] border-b-[0.05vw] border-b-neutral-300 hover:bg-neutral-300 transition duration-200 ease-in-out"
             }
-            onClick={() => setData(item + 1)}
+            onClick={() => setData(item + 0.5)}
           >
             <IoIosArrowUp
               className={"text-[1vw] iP:text-[3vh] mx-[0.5vw] h-[2.5vh]"}
@@ -629,7 +629,7 @@ const Section = ({ item, setData }: { item: number; setData: any }) => {
               "bg-neutral-50 rounded-b-[0.5vw] iP:rounded-b-[1vh] border-t-[0.05vw] border-t-neutral-300 hover:bg-neutral-300 transition duration-200 ease-in-out"
             }
             onClick={() => {
-              if (item > 0) setData(item - 1);
+              if (item > 0) setData(item - 0.5);
             }}
           >
             <IoIosArrowDown
