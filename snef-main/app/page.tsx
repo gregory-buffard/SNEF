@@ -14,8 +14,8 @@ import {useUser} from "@clerk/nextjs";
 const Page = () => {
     const [name, setName] = useState( ""),
         {user} = useUser(),
-        isAdmin = user?.publicMetadata.admin || false as boolean,
     router = useRouter();
+    let isAdmin = user?.publicMetadata.admin || undefined;
     const handleClick = () => {
         switch (true) {
             case (name.includes(',')):
@@ -35,10 +35,10 @@ const Page = () => {
     useEffect(() => {
         if (Cookies.get("name") !== undefined) {
             setName(Cookies.get("name") as string);
-        }else if (user?.firstName !== undefined && user?.lastName !== undefined) {
-                const userName = user?.firstName + ' ' + user?.lastName as string;
+        }else {
+                let userName = user?.firstName + ' ' + user?.lastName as string;
                 setName(userName);
-            }
+        }
     },[user?.firstName, user?.lastName])
 
     const [alertBox, setAlertBox] = useState(false),

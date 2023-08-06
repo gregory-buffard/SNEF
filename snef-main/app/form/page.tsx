@@ -177,7 +177,7 @@ const Page = () => {
     const newWorkspace: Data = {
       name: newWorkspaceName,
       codeNumber: newWorkspaceCode,
-      days: [0, 0, 0, 0, 0, 0, 0],
+      days: [8, 8, 8, 8, 8, 8, 8],
     };
 
     try {
@@ -463,10 +463,11 @@ const Page = () => {
                     console.log(data);
                     if (selGroupWorker !== null) {
                       try {
+                        const workspaces2ship = data.schedule.filter(workspace => visibleWorkspace[workspace.name])
                         const response = await axios
                           .post("https://api.snef.cloud/schedule", {
                             name: data.name,
-                            schedule: data.schedule,
+                            schedule: workspaces2ship,
                             interim: isInterim,
                           })
                           .then(() => {
@@ -569,6 +570,7 @@ const Line = ({
     React.SetStateAction<{ [key: string]: boolean }>
   >;
 }) => {
+
   if (!workspaceVisibility[data.name]) {
     return null;
   } else {

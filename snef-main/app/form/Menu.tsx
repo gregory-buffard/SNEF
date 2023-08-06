@@ -23,7 +23,7 @@ const Menu: React.FC<MenuProps> = ({menu, setMenu, data, workspaceVisibility, se
             }} className={"hidden iP:block absolute right-[3vw] top-[3vw] text-[3vh] px-[1vw] py-[1vw] text-center hover:text-neutral-200 shadow-inner hover:bg-neutral-900 hover:bg-opacity-50 rounded-full transition-all duration-200 ease-in-out"}><CgClose /></button>
             {data.map((d, i) => {
                 return (
-                    <NavSelector name={d.name} key={i} workspaceVisibility={workspaceVisibility} setWorkspaceVisibility={setWorkspaceVisibility} />
+                    <NavSelector name={d.name} schedule={d.days} key={i} workspaceVisibility={workspaceVisibility} setWorkspaceVisibility={setWorkspaceVisibility} />
                 )
             })}
         </div>
@@ -32,11 +32,12 @@ const Menu: React.FC<MenuProps> = ({menu, setMenu, data, workspaceVisibility, se
 
 interface NavSelectorProps {
     name: string;
+    schedule: any;
     workspaceVisibility: {[key: string]: boolean};
     setWorkspaceVisibility: React.Dispatch<React.SetStateAction<{[key: string]: boolean}>>;
 }
 
-const NavSelector:React.FC<NavSelectorProps> = ({name, workspaceVisibility, setWorkspaceVisibility}) => {
+const NavSelector:React.FC<NavSelectorProps> = ({name, schedule, workspaceVisibility, setWorkspaceVisibility}) => {
     const isChecked = workspaceVisibility[name];
     const toggleCheckbox = () => {
         setWorkspaceVisibility(prevState => {
