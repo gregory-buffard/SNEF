@@ -193,7 +193,7 @@ const getWorksheet = async (properName:any, name:any[]) => {
         "/" +
         new Date().getFullYear();
     const dateAWeekAgo = new Date();
-    dateAWeekAgo.setDate(new Date().getDate() - 7);
+    dateAWeekAgo.setDate(new Date().getDate() - 6);
     const weekAgo: string =
         dateAWeekAgo.getDate() +
         "/" +
@@ -214,7 +214,7 @@ const getWorksheet = async (properName:any, name:any[]) => {
 
     const dateToday: Date = new Date();
     const dateWeekAgo: Date = new Date(
-        dateToday.getTime() - 7 * 24 * 60 * 60 * 1000
+        dateToday.getTime() - 6 * 24 * 60 * 60 * 1000
     );
     const weekAgoWeekNumber: number = getWeekNumber(dateWeekAgo);
 
@@ -463,7 +463,7 @@ const getWorksheet = async (properName:any, name:any[]) => {
         }
       })
 
-      const ws: any = wb.addWorksheet(`POINTAGE de ${properNames[m]}`);
+      const ws: any = wb.addWorksheet(properNames[m]);
 
       const logo = ws.addImage({
         path: './node-server/src/excel/snef.png',
@@ -491,7 +491,7 @@ const getWorksheet = async (properName:any, name:any[]) => {
           "/" +
           new Date().getFullYear();
       const dateAWeekAgo = new Date();
-      dateAWeekAgo.setDate(dateAWeekAgo.getDate() - 7);
+      dateAWeekAgo.setDate(dateAWeekAgo.getDate() - 6);
       const weekAgo: string =
           dateAWeekAgo.getDate() +
           "/" +
@@ -512,7 +512,7 @@ const getWorksheet = async (properName:any, name:any[]) => {
 
       const dateToday: Date = new Date();
       const dateWeekAgo: Date = new Date(
-          dateToday.getTime() - 7 * 24 * 60 * 60 * 1000
+          dateToday.getTime() - 6 * 24 * 60 * 60 * 1000
       );
       const weekAgoWeekNumber: number = getWeekNumber(dateWeekAgo);
 

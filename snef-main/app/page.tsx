@@ -24,9 +24,15 @@ const Page = () => {
                     setAlertBox(false);
                 }, 4600);
                 break;
+                case (name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === 'interimaire' || name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === 'interim'):
+                    setName('interim');
+                    Cookies.set("name", 'interim');
+                    router.push("/form");
+                    break;
             default:
                 if (name !== "" && name !== undefined) {
-                    Cookies.set("name", name);
+                    setName(prevName => prevName.trim());
+                    Cookies.set("name", name.trim());
                     router.push("/form");
                 }
         }
@@ -76,7 +82,7 @@ const Page = () => {
                 ) : (<></>)}
                 <div className={'flex justify-center items-center w-full space-x-[0.25vw] iP:space-x-[1vh] text-neutral-800 translate-y-[1.5vw] text-[1vw] iP:text-[2vh]'}>
                         <a className={'flex justify-center items-center bg-neutral-300 w-1/2 h-[2.5vw] iP:h-[5vh] rounded-[0.25vw] iP:rounded-[1vh] space-x-[0.25vw] shadow-inner hover:bg-neutral-400 transition-all duration-200 ease-in-out'} target={"_blank"}
-                           href={`https://api.snef.cloud/download/?name=${name}`}
+                           href={`http://localhost:5001/download/?name=${name}`}
                         ><FiDownload className={"text-[1.25vw] iP:text-[2.5vh] drop-shadow-xl"} /><p>Télécharger</p></a>
                     <button className={'flex justify-center items-center bg-neutral-300 w-1/2 h-[2.5vw] iP:h-[5vh] rounded-[0.25vw] iP:rounded-[1vh] space-x-[0.25vw] shadow-inner hover:bg-neutral-400 transition-all duration-200 ease-in-out'} onClick={handleClick}><AiOutlineForm className={"text-[1.25vw] iP:text-[2.5vh] drop-shadow-xl"} /><p>Modifier</p></button>
                 </div>

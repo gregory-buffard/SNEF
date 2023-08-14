@@ -17,7 +17,7 @@ import {AiOutlineLoading} from "react-icons/ai";
 
 // - Dating -
 let weekAgoDate: any = new Date();
-weekAgoDate.setDate(weekAgoDate.getDate() - 7);
+weekAgoDate.setDate(weekAgoDate.getDate() - 6);
 
 weekAgoDate = `${weekAgoDate.getDate()} / ${
   weekAgoDate.getMonth() + 1
@@ -177,7 +177,7 @@ const Page = () => {
     const newWorkspace: Data = {
       name: newWorkspaceName,
       codeNumber: newWorkspaceCode,
-      days: [8, 8, 8, 8, 8, 8, 8],
+      days: [8, 8, 8, 8, 8, 8, 0],
     };
 
     try {

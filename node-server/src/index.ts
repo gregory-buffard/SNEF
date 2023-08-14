@@ -73,7 +73,7 @@ app.get("/worker", async (req, res) => {
     })
     .catch(async (err) => {
       console.error(err);
-      if (err.message === "Worker not found") {
+      if (err.message === "Worker not found" && !name.includes('interim') && !name.includes('snef')) {
         await Worker.create({
           name: name,
           week: getWeekNumber(new Date()),
@@ -93,9 +93,9 @@ app.get("/workers", async (req, res) => {
   try {
     let workers;
     if (req.query.interim === 'true') {
-      workers = await Worker.find({ interim: true, name: {$nin: ['interim', 'snef']} });
+      workers = await Worker.find({ interim: true});
     } else if (req.query.interim === 'false') {
-        workers = await Worker.find({ interim: false, name: {$nin: ['interim', 'snef']} });
+        workers = await Worker.find({ interim: false});
     } else {
       workers = await Worker.find({name: {$nin: ['interim', 'snef']}});
     }
@@ -113,7 +113,7 @@ app.get("/download", async (req, res) => {
   let properName = req.query.name.toString();
   const workers = [];
   if (name.includes('interim')) {
-    const interimWorkers = await Worker.find({ interim: true, name: {$nin: ['interim', 'snef']} });
+    const interimWorkers = await Worker.find({ interim: true});
     if (interimWorkers.length === 0) return res.status(404).send("No interim workers found");
     for (let i = 0; i < interimWorkers.length; i++) {
       const worker = await Worker.findOne({ name: interimWorkers[i].name });
@@ -123,7 +123,7 @@ app.get("/download", async (req, res) => {
     let workerNames = workers.map(worker => worker.name);
     properName = workerNames.join(", ");
   } else if (name.includes('snef')) {
-    const interimWorkers = await Worker.find({ interim: false, name: {$nin: ['interim', 'snef']}});
+    const interimWorkers = await Worker.find({ interim: false});
     if (interimWorkers.length === 0) return res.status(404).send("No interim workers found");
     for (let i = 0; i < interimWorkers.length; i++) {
       const worker = await Worker.findOne({ name: interimWorkers[i].name });
